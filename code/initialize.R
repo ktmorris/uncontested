@@ -7,6 +7,8 @@ library(rgdal)
 library(wru)
 library(tidycensus)
 
+source("./code/misc/get_basic_census.R")
+
 ## NOTE: USER MUST HAVE CENSUS API KEY SAVED IN SYS.ENV
 
 api_key <- Sys.getenv("CENSUS_API_KEY")

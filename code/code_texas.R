@@ -1,9 +1,23 @@
 
 
 if(db_access){
+  ## get texas history
+  history <- dbGetQuery(db, "select * from tx_roll_history_0419")
+  
+  history <- history %>% 
+    mutate(voted_primary = ELECTION_DATE == "20180306",
+           voted_general = ELECTION_DATE == "20181106",
+           dem = ELECTION_PARTY == "DEM" & !is.na(ELECTION_PARTY),
+           rep = ELECTION_PARTY == "REP" & !is.na(ELECTION_PARTY)) %>% 
+    group_by(VUID) %>% 
+    summarize(voted_primary = sum(voted_primary, na.rm = T),
+              voted_general = sum(voted_general, na.rm = T),
+              dem = sum(dem, na.rm = T),
+              rep = sum(rep, na.rm = T))
+  
   ## read in texas voter file
   tx <- dbGetQuery(db, "select VUID, LAST_NAME, GENDER, DOB, PERM_HOUSE_NUMBER, PERM_DESIGNATOR, PERM_STREET_NAME, PERM_STREET_TYPE,
-                        PERM_CITY, PERM_ZIPCODE, PERM_DIRECTIONAL_PREFIX, PERM_DIRECTIONAL_SUFFIX from tx_roll_0419 where STATUS_CODE == 'V' limit 10000")
+                        PERM_CITY, PERM_ZIPCODE, PERM_DIRECTIONAL_PREFIX, PERM_DIRECTIONAL_SUFFIX from tx_roll_0419 where STATUS_CODE == 'V'")
 
   ## set up and geocode voter file
   tx <- tx %>% 
@@ -17,6 +31,10 @@ if(db_access){
   
   tx <- geocode(tx) %>% 
     select(-street, -city, -zip, -state)
+  
+  tx <- left_join(tx, history, by = "VUID")
+  rm(history)
+  
   saveRDS(tx, "./temp/tx_geocoded.RDS")
 }
 
@@ -56,4 +74,6 @@ tx <- predict_race(tx, census.geo = "tract", census.key = api_key, retry = 999, 
 tx_census_data <- get_basic_census_stats(geo = "tract", state = "TX", year = 2017)
 
 tx <- left_join(tx, tx_census_data, by = c("tract_full" = "GEOID"))
+
+saveRDS(tx, "texas_race_census.RDS")
 
