@@ -6,6 +6,9 @@ library(parallel)
 library(scales)
 library(kableExtra)
 
+
+##this needs to be run on NYU's high powered computer system
+
 setwd("/scratch/km3815/matching")
 
 NodeFile = Sys.getenv("MY_HOSTFILE")
