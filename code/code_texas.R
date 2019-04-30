@@ -17,7 +17,7 @@ if(db_access){
   
   ## read in texas voter file
   tx <- dbGetQuery(db, "select VUID, LAST_NAME, GENDER, DOB, PERM_HOUSE_NUMBER, PERM_DESIGNATOR, PERM_STREET_NAME, PERM_STREET_TYPE,
-                        PERM_CITY, PERM_ZIPCODE, PERM_DIRECTIONAL_PREFIX, PERM_DIRECTIONAL_SUFFIX from tx_roll_0419 where STATUS_CODE == 'V'")
+                        PERM_CITY, PERM_ZIPCODE, PERM_DIRECTIONAL_PREFIX, PERM_DIRECTIONAL_SUFFIX, COUNTY_CODE from tx_roll_0419 where STATUS_CODE == 'V'")
 
   ## set up and geocode voter file
   tx <- tx %>% 
@@ -75,5 +75,29 @@ tx_census_data <- get_basic_census_stats(geo = "tract", state = "TX", year = 201
 
 tx <- left_join(tx, tx_census_data, by = c("tract_full" = "GEOID"))
 
-saveRDS(tx, "texas_race_census.RDS")
+### pull in uncontested races
+uc <- fread("./raw_data/uncontested_seats_2018.csv") %>% 
+  mutate(state = substring(seat, 1, 2),
+         seat = substring(seat, 3, 4))
+codes <- fips_codes %>% 
+  group_by(state) %>% 
+  filter(row_number() == 1)
+uc <- left_join(uc, codes, by = "state") %>% 
+  mutate(seat = paste0(state_code, seat)) %>% 
+  select(seat, type)
+rm(codes)
+
+tx <- left_join(tx, uc, by = c("cd" = "seat"))
+tx$uncontested <- !is.na(tx$type)
+
+## clean up, only keep complete cases for matching procedure
+tx <- tx %>% 
+  mutate_at(vars(voted_primary, voted_general, rep, dem), funs(ifelse(is.na(.), 0, .))) %>% 
+  mutate(GENDER = ifelse(GENDER == "F", 1, ifelse(GENDER == "M", 0, 0.5))) %>% 
+  filter(!is.na(VUID)) %>% 
+  dplyr::select(-type)
+
+tx <- tx[complete.cases(tx), ]
+
+saveRDS(tx, "./temp/texas_race_census.RDS")
 

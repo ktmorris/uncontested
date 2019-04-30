@@ -1,5 +1,6 @@
 #### set up project
-
+library(kableExtra)
+library(scales)
 library(Matching)
 library(tidyverse)
 library(data.table)
