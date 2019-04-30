@@ -5,15 +5,15 @@ if(db_access){
   history <- dbGetQuery(db, "select * from tx_roll_history_0419")
   
   history <- history %>% 
-    mutate(voted_primary = ELECTION_DATE == "20180306",
-           voted_general = ELECTION_DATE == "20181106",
-           dem = ELECTION_PARTY == "DEM" & !is.na(ELECTION_PARTY),
-           rep = ELECTION_PARTY == "REP" & !is.na(ELECTION_PARTY)) %>% 
+    mutate(voted_primary = as.integer(ELECTION_DATE == "20180306" & !is.na(ELECTION_DATE)),
+           voted_general = as.integer(ELECTION_DATE == "20181106" & !is.na(ELECTION_DATE)),
+           dem = as.integer(ELECTION_PARTY == "DEM" & !is.na(ELECTION_PARTY)),
+           rep = as.integer(ELECTION_PARTY == "REP" & !is.na(ELECTION_PARTY))) %>% 
     group_by(VUID) %>% 
-    summarize(voted_primary = sum(voted_primary, na.rm = T),
-              voted_general = sum(voted_general, na.rm = T),
-              dem = sum(dem, na.rm = T),
-              rep = sum(rep, na.rm = T))
+    summarize(voted_primary = max(voted_primary, na.rm = T),
+              voted_general = max(voted_general, na.rm = T),
+              dem = max(dem, na.rm = T),
+              rep = max(rep, na.rm = T))
   
   ## read in texas voter file
   tx <- dbGetQuery(db, "select VUID, LAST_NAME, GENDER, DOB, PERM_HOUSE_NUMBER, PERM_DESIGNATOR, PERM_STREET_NAME, PERM_STREET_TYPE,
@@ -21,9 +21,9 @@ if(db_access){
 
   ## set up and geocode voter file
   tx <- tx %>% 
-    mutate(street = paste("-", PERM_HOUSE_NUMBER, PERM_DESIGNATOR, PERM_DIRECTIONAL_PREFIX, PERM_STREET_NAME, PERM_STREET_TYPE, PERM_DIRECTIONAL_SUFFIX, "-", sep = "-"),
-           street = gsub("\\s+", " ", str_trim(gsub("-", " ", gsub("-NA-", " ", street)))),
-           street = gsub(" NA ", " ", street),
+    mutate_at(vars(PERM_HOUSE_NUMBER, PERM_DESIGNATOR, PERM_DIRECTIONAL_PREFIX, PERM_STREET_NAME, PERM_STREET_TYPE, PERM_DIRECTIONAL_SUFFIX), funs(ifelse(is.na(.), "", .))) %>% 
+    mutate(street = paste(PERM_HOUSE_NUMBER, PERM_DESIGNATOR, PERM_DIRECTIONAL_PREFIX, PERM_STREET_NAME, PERM_STREET_TYPE, PERM_DIRECTIONAL_SUFFIX),
+           street = gsub("\\s+", " ", street),
            city = PERM_CITY,
            zip = PERM_ZIPCODE,
            state = "TX") %>% 
