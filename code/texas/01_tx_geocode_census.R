@@ -17,7 +17,8 @@ if(db_access){
   
   ## read in texas voter file
   tx <- dbGetQuery(db, "select VUID, LAST_NAME, GENDER, DOB, PERM_HOUSE_NUMBER, PERM_DESIGNATOR, PERM_STREET_NAME, PERM_STREET_TYPE,
-                        PERM_CITY, PERM_ZIPCODE, PERM_DIRECTIONAL_PREFIX, PERM_DIRECTIONAL_SUFFIX, COUNTY_CODE from tx_roll_0419 where STATUS_CODE == 'V'")
+                        PERM_CITY, PERM_ZIPCODE, PERM_DIRECTIONAL_PREFIX, PERM_DIRECTIONAL_SUFFIX, COUNTY_CODE
+                        from tx_roll_0419 where STATUS_CODE == 'V' AND EDR__EFFECTIVE_DATE_OF_REGISTRATION_ <= '20181009'")
 
   ## set up and geocode voter file
   tx <- tx %>% 
