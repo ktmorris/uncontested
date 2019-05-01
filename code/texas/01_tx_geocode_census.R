@@ -94,11 +94,11 @@ tx$uncontested <- !is.na(tx$type)
 ## clean up, only keep complete cases for matching procedure
 tx <- tx %>% 
   mutate_at(vars(voted_primary, voted_general, rep, dem), funs(ifelse(is.na(.), 0, .))) %>% 
-  mutate(GENDER = ifelse(GENDER == "F", 1, ifelse(GENDER == "M", 0, 0.5))) %>% 
+  mutate(GENDER = ifelse(GENDER == "F", 1, ifelse(GENDER == "M", 0, 0.5)),
+         GENDER = ifelse(is.na(GENDER), 0.5, GENDER)) %>% 
   filter(!is.na(VUID)) %>% 
   dplyr::select(-type)
 
 tx <- tx[complete.cases(tx), ]
 
 saveRDS(tx, "./temp/texas_race_census.RDS")
-

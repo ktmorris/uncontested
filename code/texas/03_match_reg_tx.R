@@ -1,11 +1,35 @@
 
-tx <- readRDS("./temp/texas_race_census.RDS")
+library(snow)
+library(parallel)
+
+setwd("/scratch/km3815/matching")
+
+NodeFile = Sys.getenv("MY_HOSTFILE")
 
 
-X <- tx %>% 
-  dplyr::select(GENDER, voted_primary, dem, rep, yob, pred.whi, pred.bla, pred.his, median_income, some_college)
+cl <- makeCluster(detectCores(), type="SOCK")
 
-for(i in c(1:10)){
+
+
+clusterEvalQ(cl, {
+  library(Matching)
+  library(scales)
+  library(kableExtra)
+  library(tidyverse)
+  library(data.table)
+})
+
+parLapply(cl = cl, 1:6, function(i){
+  tx <- readRDS("./temp/texas_race_census.RDS") %>%
+    group_by(uncontested) %>%
+    sample_frac(0.01) %>%
+    ungroup()
+  
+  
+  X <- tx %>% 
+    dplyr::select(GENDER, voted_primary, dem, rep, yob, pred.whi, pred.bla, pred.his, median_income, some_college)
+})
+  
   
   load(paste0("./temp/tx_genmatch_", i, ".Rdata"))
   
@@ -111,4 +135,4 @@ for(i in c(1:10)){
     add_header_above(c(" " = 1, "Means: Unmatched Data" = 2, "Means: Matched Data" = 2, "Percent Improvement" = 4), align = "c") %>%
     kable_styling(font_size = 12, full_width = F) %>%
     save_kable(file = paste0("./output/matches_tx_", i, ".html"), self_contained = T)
-}
+})
