@@ -33,8 +33,9 @@ if(db_access){
   tx <- geocode(tx) %>% 
     select(-street, -city, -zip, -state)
   
-  saveRDS(tx, "./temp/tx_geocoded.RDS")
 
+  saveRDS(tx, "./temp/tx_geocoded.RDS")
+}
 
 tx <- readRDS("./temp/tx_geocoded.RDS")
 ## spatial join to find census tracts and congressional districts
