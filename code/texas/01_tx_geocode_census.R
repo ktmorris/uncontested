@@ -2,18 +2,10 @@
 
 if(db_access){
   ## get texas history
-  history <- dbGetQuery(db, "select * from tx_roll_history_0419")
-  
-  history <- history %>% 
-    mutate(voted_primary = as.integer(ELECTION_DATE == "20180306" & !is.na(ELECTION_DATE)),
-           voted_general = as.integer(ELECTION_DATE == "20181106" & !is.na(ELECTION_DATE)),
-           dem = as.integer(ELECTION_PARTY == "DEM" & !is.na(ELECTION_PARTY)),
-           rep = as.integer(ELECTION_PARTY == "REP" & !is.na(ELECTION_PARTY))) %>% 
-    group_by(VUID) %>% 
-    summarize(voted_primary = max(voted_primary, na.rm = T),
-              voted_general = max(voted_general, na.rm = T),
-              dem = max(dem, na.rm = T),
-              rep = max(rep, na.rm = T))
+  p_vote <- dbGetQuery(db, "select VUID from tx_roll_history_0419 where ELECTION_DATE == '20180306'")
+  g_vote <- dbGetQuery(db, "select VUID from tx_roll_history_0419 where ELECTION_DATE == '20181106'")
+  dem <- dbGetQuery(db, "select VUID from tx_roll_history_0419 where ELECTION_PARTY == 'DEM'")
+  rep <- dbGetQuery(db, "select VUID from tx_roll_history_0419 where ELECTION_PARTY == 'REP'")
   
   ## read in texas voter file
   tx <- dbGetQuery(db, "select VUID, LAST_NAME, GENDER, DOB, PERM_HOUSE_NUMBER, PERM_DESIGNATOR, PERM_STREET_NAME, PERM_STREET_TYPE,
@@ -28,16 +20,21 @@ if(db_access){
            city = PERM_CITY,
            zip = PERM_ZIPCODE,
            state = "TX") %>% 
-    select(-starts_with("PERM"))
+    select(-starts_with("PERM")) %>% 
+    filter(!is.na(VUID))
+  
+  tx$voted_primary <- tx$VUID %in% p_vote$VUID
+  tx$voted_general <- tx$VUID %in% g_vote$VUID
+  tx$dem <- tx$VUID %in% dem$VUID
+  tx$rep <- tx$VUID %in% rep$VUID
+  
+  rm(p_vote, g_vote, dem, rep)
   
   tx <- geocode(tx) %>% 
     select(-street, -city, -zip, -state)
   
-  tx <- left_join(tx, history, by = "VUID")
-  rm(history)
-  
   saveRDS(tx, "./temp/tx_geocoded.RDS")
-}
+
 
 tx <- readRDS("./temp/tx_geocoded.RDS")
 ## spatial join to find census tracts and congressional districts
@@ -93,7 +90,6 @@ tx$uncontested <- !is.na(tx$type)
 
 ## clean up, only keep complete cases for matching procedure
 tx <- tx %>% 
-  mutate_at(vars(voted_primary, voted_general, rep, dem), funs(ifelse(is.na(.), 0, .))) %>% 
   mutate(GENDER = ifelse(GENDER == "F", 1, ifelse(GENDER == "M", 0, 0.5)),
          GENDER = ifelse(is.na(GENDER), 0.5, GENDER)) %>% 
   filter(!is.na(VUID)) %>% 
