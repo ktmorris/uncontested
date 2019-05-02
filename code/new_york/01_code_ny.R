@@ -40,6 +40,7 @@ elects <- fread("./raw_data/elects_nys.csv")
 #   saveRDS(ny, "./temp/ny_geocoded.RDS")
 # }
 
+
 ny <- readRDS("./temp/ny_geocoded.RDS")
 ## spatial join to find census tracts and congressional districts
 tracts <- readOGR("H:/Public/Democracy/Voting Rights & Elections/data/uncontested/raw_data/tl_2018_36_tract", "tl_2018_36_tract")
