@@ -1,4 +1,5 @@
 #### set up project
+library(splitstackshape)
 library(kableExtra)
 library(scales)
 library(Matching)
