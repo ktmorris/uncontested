@@ -15,12 +15,12 @@ census_vap <- function(geo, state = NULL, county = NULL, year){
                                yw3 = "B01001_029",
                                yw4 = "B01001_030"),
                  summary_var = "B01001_001", state = state, county = county, year = year) %>%
-    group_by(GEOID) %>%
-    summarize(under18 = sum(estimate),
+    dplyr::group_by(GEOID) %>%
+    dplyr::summarize(under18 = sum(estimate),
               pop = mean(summary_est)) %>%
-    mutate(vap = pop - under18) %>%
-    select(-under18, -pop) %>%
-    ungroup()
+    dplyr::mutate(vap = pop - under18) %>%
+    dplyr::select(-under18, -pop) %>%
+    dplyr::ungroup()
 }
 
 census_race_ethnicity <- function(geo, state = NULL, county = NULL, year){
@@ -33,9 +33,9 @@ census_race_ethnicity <- function(geo, state = NULL, county = NULL, year){
                                           latino_black = "B03002_014"),
                             summary_var = c(population = "B03002_001"),
                             state = state, county = county, year = year) %>%
-    mutate(estimate = estimate / summary_est) %>%
-    select(-ends_with("moe")) %>%
-    rename(population = summary_est) %>%
+    dplyr::mutate(estimate = estimate / summary_est) %>%
+    dplyr::select(-ends_with("moe")) %>%
+    dplyr::rename(population = summary_est) %>%
     spread(variable, estimate)
 }
 
@@ -45,8 +45,8 @@ census_income <- function(geo, state = NULL, county = NULL, year){
   income <- get_acs(geography = geo,
                     variables = c(medincome = "B19013_001"),
                     state = state, county = county, year = year) %>%
-    select(-variable, -moe) %>%
-    rename(median_income = estimate)
+    dplyr::select(-variable, -moe) %>%
+    dplyr::rename(median_income = estimate)
 }
 
 census_education <- function(geo, state = NULL, county = NULL, year){
@@ -69,8 +69,8 @@ census_education <- function(geo, state = NULL, county = NULL, year){
                                      "B15002_035"),
                        summary_var = "B15002_001",
                        state = state, county = county, year = year) %>%
-    group_by(GEOID, NAME) %>%
-    summarize(some_college = sum(estimate / summary_est))
+    dplyr::group_by(GEOID, NAME) %>%
+    dplyr::summarize(some_college = sum(estimate / summary_est))
 }
 
 census_unemployment <- function(geo, state = NULL, county = NULL, year){
@@ -81,8 +81,8 @@ census_unemployment <- function(geo, state = NULL, county = NULL, year){
                                         unem = "B23025_005"),
                           output = "wide",
                           state = state, county = county, year = year) %>%
-    mutate(unem = unemE / lfE) %>%
-    select(GEOID, NAME, unem)
+    dplyr::mutate(unem = unemE / lfE) %>%
+    dplyr::select(GEOID, NAME, unem)
 }
 
 census_median_age <- function(geo, state = NULL, county = NULL, year){
@@ -91,7 +91,7 @@ census_median_age <- function(geo, state = NULL, county = NULL, year){
   median_age <- get_acs(geography = geo,
                         variables = c(median_age = "B01002_001"),
                         state = state, county = county, year = year, output = "wide") %>%
-    select(GEOID, median_age = median_ageE)
+    dplyr::select(GEOID, median_age = median_ageE)
 }
 
 census_non_citizen <- function(geo, state = NULL, county = NULL, year){
@@ -99,18 +99,11 @@ census_non_citizen <- function(geo, state = NULL, county = NULL, year){
   library(tidyverse)
 
   non_citizen <- get_acs(geography = geo,
-                         variables = c(c1 = "B05001_002",
-                                       c2 = "B05001_003",
-                                       c3 = "B05001_004",
-                                       c4 = "B05001_005",
-                                       non_citizen = "B05001_006",
-                                       tot = "B05001_006"),
+                         variables = c(non_citizen = "B05001_006"),
+                         summary_var = "B05001_001",
                          state = state, county = county, year = year) %>%
-    group_by(GEOID) %>%
-    mutate(tot = sum(estimate),
-           share_non_citizen = estimate / tot) %>%
-    filter(variable == "non_citizen") %>%
-    select(GEOID, share_non_citizen)
+    dplyr::mutate(share_non_citizen = estimate / summary_est) %>%
+    dplyr::select(GEOID, share_non_citizen)
 }
 
 census_movers <- function(geo, state = NULL, county = NULL, year){
@@ -120,8 +113,8 @@ census_movers <- function(geo, state = NULL, county = NULL, year){
                     variables = c(tot = "B07001_001",
                                   not_moved = "B07001_017"),
                     state = state, county = county, year = year, output = "wide") %>%
-    mutate(share_moved = 1 - (not_movedE / totE)) %>%
-    select(GEOID, share_moved)
+    dplyr::mutate(share_moved = 1 - (not_movedE / totE)) %>%
+    dplyr::select(GEOID, share_moved)
 }
 
 census_no_car <- function(geo, state = NULL, county = NULL, year){
@@ -131,8 +124,8 @@ census_no_car <- function(geo, state = NULL, county = NULL, year){
                     variables = c(tot = "B08201_001",
                                   no_car = "B08201_002"),
                     state = state, county = county, year = year, output = "wide") %>%
-    mutate(share_no_car = no_carE / totE) %>%
-    select(GEOID, share_no_car)
+    dplyr::mutate(share_no_car = no_carE / totE) %>%
+    dplyr::select(GEOID, share_no_car)
 }
 
 get_basic_census_stats <- function(geo, state = NULL, county = NULL, year){
