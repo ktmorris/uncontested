@@ -1,0 +1,49 @@
+---
+title: "Uncontested Races and Turnout"
+author: "Kevin Morris and Peter Miller"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  bookdown::pdf_document2:
+    toc: no
+    fig_caption: yes
+bibliography: "../../felony_disenfranchisement/research/citations.bib"
+link-citations: yes
+---
+```{r setup, echo = F, message = F, warning = F}
+knitr::opts_knit$set(root.dir = "..", dev = "cairo_pdf")
+library(sandwich)
+library(lmtest)
+library(scales)
+library(tidyverse)
+library(extrafont)
+library(kableExtra)
+library(stargazer)
+loadfonts()
+
+```
+
+```{r tx-match-table, echo = F}
+t <- readRDS("./temp/match_table_tx.rds")
+j <- knitr::kable(t, booktabs = T, caption = "(\\#tab:tx-match) Results of Texas Matching", linesep = "") %>% 
+  add_header_above(c(" " = 1, "Means: Unmatched Data" = 2, "Means: Matched Data" = 2, "Percent Improvement" = 4), align = "c") %>% 
+  kable_styling(latex_options = c("scale_down", "HOLD_position"))
+j
+```
+
+
+```{r fl-match-table, echo = F}
+t <- readRDS("./temp/match_table_fl.rds")
+j <- knitr::kable(t, booktabs = T, caption = "(\\#tab:fl-match) Results of Florida Matching", linesep = "") %>% 
+  add_header_above(c(" " = 1, "Means: Unmatched Data" = 2, "Means: Matched Data" = 2, "Percent Improvement" = 4), align = "c") %>% 
+  kable_styling(latex_options = c("scale_down", "HOLD_position"))
+j
+```
+
+
+```{r ny-match-table, echo = F}
+t <- readRDS("./temp/match_table_ny.rds")
+j <- knitr::kable(t, booktabs = T, caption = "(\\#tab:ny-match) Results of New York Matching", linesep = "") %>% 
+  add_header_above(c(" " = 1, "Means: Unmatched Data" = 2, "Means: Matched Data" = 2, "Percent Improvement" = 4), align = "c") %>% 
+  kable_styling(latex_options = c("scale_down", "HOLD_position"))
+j
+```
