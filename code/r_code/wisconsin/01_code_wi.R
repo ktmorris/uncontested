@@ -1,113 +1,78 @@
+# 
+# ## read in wisconsin voter file
+# wi <- dbGetQuery(db, "select Voter_Reg_Number, LastName, FirstName, County, Congressional, State_Assembly,
+#                       Address1, Address2, November2018, August2018, ApplicationDate, Voter_Status from wi_roll_0319
+#                      where Voter_Status == 'Active'") %>%
+#   filter(as.Date(gsub(" [A-z ]*", "" , ApplicationDate), "%m/%d/%Y") <= "2018-10-17") %>% 
+#   mutate(street = Address1,
+#          city = gsub(" WI.*$", "", Address2),
+#          zip = gsub(".*WI", "", Address2),
+#          state = "WI") %>%
+#   select(-Address2, -Address1)
+# 
+# 
+# wi <- geocode(wi)
+# 
+# 
+# genders <- gender::gender(unique(wi$FirstName))
+# 
+# wi <- left_join(wi, dplyr::select(genders, FirstName = name, gender = proportion_female), by = "FirstName")
+# rm(genders)
+# 
+# tracts <- readOGR("./raw_data/tl_2018_55_tract", "tl_2018_55_tract")
+# pings  <- SpatialPoints(wi[c('longitude','latitude')], proj4string = tracts@proj4string)
+# wi$tract <- over(pings, tracts)$GEOID
+# 
+# saveRDS(wi, "./temp/wi_geocoded.rds")
 
-## read in new york voter file
-wi <- dbGetQuery(db, "select Voter_Reg_Number, LastName, FirstName, County,
-                      Address1, Address2, November2018, August2018, ApplicationDate, Voter_Status from wi_roll_0319
-                     where Voter_Status == 'Active'") %>%
-  filter(as.Date(gsub(" [A-z ]*", "" , ApplicationDate), "%m/%d/%Y") <= "2018-10-17") %>% 
-  mutate(street = Address1,
-         city = gsub(" WI.*$", "", Address2),
-         zip = gsub(".*WI", "", Address2),
-         state = "WI") %>%
-  select(-Address2, -Address1)
-
-
-saveRDS(wi, "./temp/raw_wi.rds")
-
-
-wi <- readRDS("./temp/raw_wi.rds")
-
-wi <- geocode(wi)
-
-
-
-
-
-
-
-
-
-
-
-
-history <- cSplit(dplyr::select(ny, nys_id, history), "history", sep = ";", direction = "long", type.convert = F)
-history <- left_join(history, elects, by = "history")
-
-primary <- filter(history, year == 2018, grepl("primary", election_type))
-general <- filter(history, year == 2018, grepl("general", election_type))
-
-ny$voted_primary <- ny$nys_id %in% primary$nys_id
-ny$voted_general <- ny$nys_id %in% general$nys_id
-
-ny <- dplyr::select(ny, -history)
-
-rm(general, primary, history)
-## set up and geocode voter file
-
-ny <- geocode(ny) %>%
-  select(-street, -city, -zip, -state)
+wi <- readRDS("./temp/wi_geocoded.rds")
 
 
-saveRDS(ny, "./temp/ny_geocoded.RDS")
+wi$voted_primary <- wi$August2018 %in% c("Absentee", "At Polls")
+wi$voted_general <- wi$November2018 %in% c("Absentee", "At Polls")
 
-ny <- readRDS("./temp/ny_geocoded.RDS")
-## spatial join to find census tracts and congressional districts
-tracts <- readOGR("H:/Public/Democracy/Voting Rights & Elections/data/uncontested/raw_data/tl_2018_36_tract", "tl_2018_36_tract")
+wi <- dplyr::select(wi, -August2018, -November2018)
 
-pings  <- SpatialPoints(ny[c('longitude','latitude')], proj4string = tracts@proj4string)
-ny$tract <- over(pings, tracts)$GEOID
-
-cds <- readOGR("H:/Public/Democracy/Voting Rights & Elections/data/uncontested/raw_data/tl_2018_us_cd116", "tl_2018_us_cd116")
-cds <- cds[substring(cds@data$GEOID, 1, 2) == "36", ]
-
-pings  <- SpatialPoints(ny[c('longitude','latitude')], proj4string = cds@proj4string)
-ny$cd <- over(pings, cds)$GEOID
-rm(tracts, cds, pings)
-
+####
+wi$cd <- as.integer(gsub("Congressional - District ", "", wi$Congressional))
+wi$assembly <- as.integer(gsub("Assembly - District ", "", wi$State_Assembly))
+wi <- dplyr::select(wi, -Congressional, -State_Assembly)
 ## use wru to come up with race estimates
-ny_census <- get_census_data(key = api_key, state = "NY", age = F, sex = F, census.geo = "tract")
-saveRDS(ny_census, "./temp/wru_census_ny.RDS")
+# wi_census <- get_census_data(key = api_key, state = "WI", census.geo = "tract")
+# saveRDS(wi_census, "./temp/wru_census_wi.RDS")
 
-ny_census <- readRDS("./temp/wru_census_ny.RDS")
+wi_census <- readRDS("./temp/wru_census_wi.RDS")
 
-ny <- ny %>%
-  rename(surname = last_name,
+wi <- wi %>%
+  rename(surname = LastName,
          tract_full = tract) %>%
   mutate(state_code = substring(tract_full, 1, 2),
          county = substring(tract_full, 3, 5),
          tract = substring(tract_full, 6, 11),
-         state = "NY")
+         state = "WI")
 
-ny <- predict_race(ny, census.geo = "tract", census.key = api_key, retry = 999, census.data = ny_census)
-
+wi <- predict_race(wi, census.geo = "tract", census.key = api_key, retry = 999, census.data = wi_census)
 
 
 ### pull down census data from tidycensus
 
-ny_census_data <- get_basic_census_stats(geo = "tract", state = "NY", year = 2017)
+wi_census_data <- get_basic_census_stats(geo = "tract", state = "WI", year = 2017)
 
-ny <- left_join(ny, ny_census_data, by = c("tract_full" = "GEOID"))
+wi <- left_join(wi, wi_census_data, by = c("tract_full" = "GEOID"))
 
 ### pull in uncontested races
-uc <- fread("./raw_data/uncontested_seats_2018.csv") %>% 
-  mutate(state = substring(seat, 1, 2),
-         seat = substring(seat, 3, 4))
-codes <- fips_codes %>% 
-  group_by(state) %>% 
-  filter(row_number() == 1)
-uc <- left_join(uc, codes, by = "state") %>% 
-  mutate(seat = paste0(state_code, seat)) %>% 
-  select(seat, type)
-rm(codes)
+uc <- fread("./raw_data/wi_assembly_uncontested.csv") %>% 
+  select(assembly = district, uncontested)
 
-ny <- left_join(ny, uc, by = c("cd" = "seat"))
-ny$uncontested <- !is.na(ny$type)
+
+wi <- left_join(wi, uc, by = "assembly")
 
 ## clean up, only keep complete cases for matching procedure
-ny <- ny %>% 
-  mutate_at(vars(voted_primary, voted_general, rep, dem), funs(ifelse(is.na(.), 0, .))) %>% 
-  filter(!is.na(nys_id)) %>% 
-  dplyr::select(-type)
+wi <- wi %>% 
+  mutate_at(vars(voted_primary, voted_general), funs(ifelse(is.na(.), 0, .))) %>% 
+  mutate(gender = ifelse(is.na(gender), 0.5, gender)) %>% 
+  filter(!is.na(Voter_Reg_Number))
 
-ny <- ny[complete.cases(ny), ]
+wi <- wi[complete.cases(wi), ]
 
-saveRDS(ny, "./temp/new_york_race_census.RDS")
+saveRDS(wi, "./temp/wisconsin_race_census.RDS")

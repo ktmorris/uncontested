@@ -6,26 +6,28 @@ library(scales)
 library(kableExtra)
 library(tidyverse)
 
-setwd("H:/Public/Democracy/Voting Rights & Elections/data/uncontested")
+while(!(file.exists("./temp/wi_genmatch_1.Rdata"))){
+  print("X")
+  Sys.sleep(5*60)
+}
+
+Sys.sleep(5*60)
+
+load(file = "./temp/wi_genmatch_1.Rdata")
+
+wi <- readRDS("./temp/wisconsin_race_census.RDS")
 
 
-load(file = "./temp/ny_genmatch_1.Rdata")
-
-ny <- readRDS("./temp/new_york_race_census.RDS")
-
-
-X <- ny %>% 
-  dplyr::select(gender, voted_primary, dem, rep, yob, pred.whi, pred.bla, pred.his, median_income, some_college)
+X <- wi %>% 
+  dplyr::select(gender, voted_primary, pred.whi, pred.bla, pred.his, median_income, some_college, median_age)
 
 
+mout <- Matchby(Tr = ny$uncontested, X = X, by = c(X$voted_primary), estimand = "ATT", Weight.matrix = genout, M = 100)
 
-# mout <- Match(Tr = ny$uncontested, X = X, estimand = "ATT", Weight.matrix = genout, version = "fast", M = 100)
-# summary(mout)
-# 
-# save(mout, file = paste0("./temp/mout_ny_", i, ".RData"))
+save(mout, file = "./temp/mout_wi_1.RData")
 
 
-load("./temp/mout_ny_1.RData")
+load("./temp/mout_wi_1.RData")
 
 matches1 <- data.frame("id" = mout[["index.control"]],
                        "weight" = mout[["weights"]]) %>% 
@@ -41,12 +43,12 @@ matches2 <- data.frame("id" = mout[["index.treated"]],
 
 matches <- bind_rows(matches1, matches2)
 
-ny <- ny %>% 
+wi <- wi %>% 
   mutate(id = row_number())
 
-matches <- left_join(matches, dplyr::select(ny, id, nys_id, voted_general), by = "id")
+matches <- left_join(matches, dplyr::select(wi, id, nys_id, voted_general), by = "id")
 
 matches$voted_general <- matches$voted_general >= 1
 
 reg_output <- glm(voted_general ~ treat, data = matches, weights = weight*100, family = "binomial")
-saveRDS(reg_output, "./temp/match_reg_ny_1.rds")
+saveRDS(reg_output, "./temp/match_reg_wi_1.rds")
