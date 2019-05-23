@@ -1,3 +1,5 @@
+## can take a couple weeks, best done on NYU HPC
+
 library(Matching)
 library(data.table)
 library(snow)
@@ -5,13 +7,6 @@ library(parallel)
 library(scales)
 library(kableExtra)
 library(tidyverse)
-
-while(!(file.exists("./temp/wi_genmatch_1.Rdata"))){
-  print("X")
-  Sys.sleep(5*60)
-}
-
-Sys.sleep(5*60)
 
 load(file = "./temp/wi_genmatch_1.Rdata")
 
@@ -22,7 +17,7 @@ X <- wi %>%
   dplyr::select(gender, voted_primary, pred.whi, pred.bla, pred.his, median_income, some_college, median_age)
 
 
-mout <- Matchby(Tr = ny$uncontested, X = X, by = c(X$voted_primary), estimand = "ATT", Weight.matrix = genout, M = 100)
+mout <- Matchby(Tr = wi$uncontested, X = X, by = c(X$voted_primary), estimand = "ATT", Weight.matrix = genout, M = 100)
 
 save(mout, file = "./temp/mout_wi_1.RData")
 
@@ -46,7 +41,7 @@ matches <- bind_rows(matches1, matches2)
 wi <- wi %>% 
   mutate(id = row_number())
 
-matches <- left_join(matches, dplyr::select(wi, id, nys_id, voted_general), by = "id")
+matches <- left_join(matches, dplyr::select(wi, id, Voter_Reg_Number, voted_general), by = "id")
 
 matches$voted_general <- matches$voted_general >= 1
 
