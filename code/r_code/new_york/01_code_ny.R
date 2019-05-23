@@ -43,7 +43,7 @@ elects <- fread("./raw_data/elects_nys.csv")
 
 ny <- readRDS("./temp/ny_geocoded.RDS")
 ## spatial join to find census tracts and congressional districts
-tracts <- readOGR("H:/Public/Democracy/Voting Rights & Elections/data/uncontested/raw_data/tl_2018_36_tract", "tl_2018_36_tract")
+tracts <- readOGR("./raw_data/tl_2018_36_tract", "tl_2018_36_tract")
 
 pings  <- SpatialPoints(ny[c('longitude','latitude')], proj4string = tracts@proj4string)
 ny$tract <- over(pings, tracts)$GEOID
