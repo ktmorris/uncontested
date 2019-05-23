@@ -44,5 +44,5 @@ matches <- left_join(matches, dplyr::select(fl, id, voter_id, voted_general, unc
 matches$voted_general <- matches$voted_general >= 1
 
 
-reg_output <- glm(voted_general ~ uncontested, data = matches, weights = weight, family = "binomial")
+reg_output <- glm(voted_general ~ treat, data = matches, weights = weight, family = "binomial")
 saveRDS(reg_output, "./temp/match_reg_fl_1.rds")
