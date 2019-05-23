@@ -16,7 +16,7 @@ X <- fl %>%
 
 load("./temp/fl_genmatch_1.Rdata")
 # 
-# mout <- Match(Tr = fl$uncontested, X = X, estimand = "ATT", Weight.matrix = genout, version = "fast", M = 100)
+# mout <- Matchby(Tr = fl$uncontested, X = X, by = c(X$dem, X$rep, X$voted_primary, X$gender), estimand = "ATT", Weight.matrix = genout, M = 100)
 # 
 # save(mout, file = "./temp/mout_fl_1.RData")
 

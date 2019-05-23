@@ -21,7 +21,7 @@ X <- tx %>%
 
 
 
-# mout <- Match(Tr = tx$uncontested, X = X, estimand = "ATT", Weight.matrix = genout, version = "fast", M = 100)
+# mout <- Matchby(Tr = tx$uncontested, X = X, by = c(X$GENDER, X$voted_primary, X$dem, X$rep), estimand = "ATT", Weight.matrix = genout, M = 100)
 # summary(mout)
 # 
 # save(mout, file = "./temp/mout_tx_1.RData")

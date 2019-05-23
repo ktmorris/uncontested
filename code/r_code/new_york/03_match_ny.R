@@ -19,7 +19,7 @@ X <- ny %>%
 
 
 
-# mout <- Match(Tr = ny$uncontested, X = X, estimand = "ATT", Weight.matrix = genout, version = "fast", M = 100)
+# mout <- Matchby(Tr = ny$uncontested, X = X, by = c(X$gender, X$voted_primary, X$dem, X$rep), estimand = "ATT", Weight.matrix = genout, M = 100)
 # summary(mout)
 # 
 # save(mout, file = paste0("./temp/mout_ny_", i, ".RData"))
