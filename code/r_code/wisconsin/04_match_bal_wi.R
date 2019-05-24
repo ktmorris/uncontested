@@ -4,11 +4,11 @@ library(kableExtra)
 library(tidyverse)
 library(data.table)
 
-order <- fread("./raw_data/var_orders_ny.csv")
+order <- fread("./raw_data/var_orders_wi.csv")
 
-ny <- readRDS("./temp/new_york_race_census.RDS")
+wi <- readRDS("./temp/wisconsin_race_census.RDS")
 
-load("./temp/mout_ny_1.RData")
+load("./temp/mout_wi_1.RData")
 
 matches1 <- data.frame("id" = mout[["index.control"]],
                        "weight" = mout[["weights"]]) %>% 
@@ -24,32 +24,32 @@ matches2 <- data.frame("id" = mout[["index.treated"]],
 
 matches <- bind_rows(matches1, matches2)
 
-ny <- ny %>% 
+wi <- wi %>% 
   mutate(id = row_number())
 
-matches <- left_join(matches, ny, by = "id")
+matches <- left_join(matches, wi, by = "id")
 
 ##########
-means_prematch <- ny %>% 
+means_prematch <- wi %>% 
   group_by(uncontested) %>% 
-  summarize_at(vars(gender, voted_primary, dem, rep, yob, pred.whi, pred.bla, pred.his, median_income, some_college), funs(mean(.)))
+  summarize_at(vars(gender, voted_primary, pred.whi, pred.bla, pred.his, median_income, some_college, median_age), funs(mean(.)))
 
 means_postmatch <- matches %>% 
   group_by(treat) %>% 
-  summarize_at(vars(gender, voted_primary, dem, rep, yob, pred.whi, pred.bla, pred.his, median_income, some_college), funs(sum(weight * .) / sum(weight)))
+  summarize_at(vars(gender, voted_primary, pred.whi, pred.bla, pred.his, median_income, some_college, median_age), funs(sum(weight * .) / sum(weight)))
 
 rm(matches, matches1, matches2)
 
-qqs_post <- lapply(c("gender", "voted_primary", "dem", "rep", "yob", "pred.whi", "pred.bla", "pred.his", "median_income", "some_college"), function(var){
-  j <- select(ny, var)
+qqs_post <- lapply(c("gender", "voted_primary", "pred.whi", "pred.bla", "pred.his", "median_income", "some_college", "median_age"), function(var){
+  j <- select(wi, var)
   colnames(j) <- c("t")
   
   qqout  <- qqstats(j$t[mout$index.treated], j$t[mout$index.control])
   return(qqout)
   })
 
-qqs_pre <- lapply(c("gender", "voted_primary", "dem", "rep", "yob", "pred.whi", "pred.bla", "pred.his", "median_income", "some_college"), function(var){
-  j <- select(ny, var, uncontested)
+qqs_pre <- lapply(c("gender", "voted_primary", "pred.whi", "pred.bla", "pred.his", "median_income", "some_college", "median_age"), function(var){
+  j <- select(wi, var, uncontested)
   colnames(j) <- c("t", "uncontested")
   
   qqout  <- qqstats(j$t[j$uncontested == T], j$t[j$uncontested == F])
@@ -68,7 +68,7 @@ PostQQmean <- c()
 PostQQmax <- c()
 
 i = 1
-for(var in c("gender", "voted_primary", "dem", "rep", "yob", "pred.whi", "pred.bla", "pred.his", "median_income", "some_college")){
+for(var in c("gender", "voted_primary", "pred.whi", "pred.bla", "pred.his", "median_income", "some_college", "median_age")){
   TrMean <- unlist(c(TrMean, filter(means_prematch, uncontested == T) %>% select(var) %>% pull()))
   PreMean <- unlist(c(PreMean, filter(means_prematch, uncontested == F) %>% select(var) %>% pull()))
   
@@ -86,7 +86,7 @@ for(var in c("gender", "voted_primary", "dem", "rep", "yob", "pred.whi", "pred.b
 
 
 
-varnames <- c("gender", "voted_primary", "dem", "rep", "yob", "pred.whi", "pred.bla", "pred.his", "median_income", "some_college")
+varnames <- c("gender", "voted_primary", "pred.whi", "pred.bla", "pred.his", "median_income", "some_college", "median_age")
 
 
 df <- data.frame("TrMean" = TrMean,
@@ -114,4 +114,4 @@ df <- full_join(df, order, by = c("names" = "variable")) %>%
 
 colnames(df) <- c("", "Treated", "Control", "Treated", "Control", "Mean Diff", "eQQ Med", "eQQ Mean", "eQQ Max")
 
-saveRDS(df, "./temp/match_table_ny.rds")
+saveRDS(df, "./temp/match_table_wi.rds")
