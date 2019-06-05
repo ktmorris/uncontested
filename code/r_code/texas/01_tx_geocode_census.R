@@ -75,6 +75,7 @@ tx_census_data <- get_basic_census_stats(geo = "tract", state = "TX", year = 201
 tx <- left_join(tx, tx_census_data, by = c("tract_full" = "GEOID"))
 
 ### pull in uncontested races
+## data from wapo https://www.washingtonpost.com/graphics/2018/politics/midterms-uncontested-candidates/
 uc <- fread("./raw_data/uncontested_seats_2018.csv") %>% 
   mutate(state = substring(seat, 1, 2),
          seat = substring(seat, 3, 4))

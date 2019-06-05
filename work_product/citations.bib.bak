@@ -1,0 +1,11 @@
+% Encoding: UTF-8
+
+@Article{wapo,
+  author       = {Bonnie Berkowitz and Chiqui Esteban},
+  title        = {Democrats lead 40-3 in the House before any votes are counted},
+  journaltitle = {Washington Post},
+  date         = {2018-10-14},
+  url          = {https://www.washingtonpost.com/graphics/2018/politics/midterms-uncontested-candidates/},
+}
+
+@Comment{jabref-meta: databaseType:biblatex;}
