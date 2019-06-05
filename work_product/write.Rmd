@@ -5,7 +5,7 @@ output:
   bookdown::pdf_document2:
     toc: no
     fig_caption: yes
-bibliography: "../../felony_disenfranchisement/research/citations.bib"
+bibliography: "citations.bib"
 link-citations: yes
 ---
 ```{r setup, echo = F, message = F, warning = F}
@@ -22,7 +22,7 @@ loadfonts()
 ```
 
 # Data and Methodology {-}
-To investigate whether voters who live in uncontested Congressional districts are less likely to cast a ballot, we examine data from the 2018 midterm elections. In 2018, there were 36 such districts. In the interest of increasing the robustness of our results, we focus on states which were home to multiple uncontested districts: California, Florida, Georiga, New York, and Texas, which account for 22 of the 36 uncontested districts.^[Massachusetts also had multiple uncontested House districts. However, because they do not maintain an accessible statewide registered voter file, they are not included in our analysis.]
+To investigate whether voters who live in uncontested Congressional districts are less likely to cast a ballot, we examine data from the 2018 midterm elections. In 2018, there were 36 districts in which only one major party candidate ran for office [@wapo].^[Of these, 17 were truly uncontested, while 19 featured a race with a minor party candidate.] In the interest of increasing the robustness of our results, we focus on states which were home to multiple uncontested districts: California, Florida, Georiga, New York, and Texas, which account for 22 of the 36 uncontested districts.^[Massachusetts also had multiple uncontested House districts. However, because they do not maintain an accessible statewide registered voter file, they are not included in our analysis.]
 
 In each of the states included in this study we match voters in uncontested districts to voters in contested districts. We then compare the turnout rates among these two groups.
 
@@ -32,13 +32,13 @@ In each of the states included in this study we match voters in uncontested dist
 Our primary data for this analysis are the statewide registered voter files. All of these voter files were acquired directly from the state in question, with the exception of Texas, whose data was provided by the firm Aristotle. Each registered voter file contains a rich set of information: dates of birth, home addresses, gender, and party affiliation, for instance. They also include indicators of elections in which each voter cast a ballot. From these files, we can see turnout at the individual level. For many of our indicators, we match based on individual-level characteristics from the voter files.
 
 ### Census Data {-}
-In addition to individual-level characteristics, we also match on sociodemographic information not available from the voter files. We do so by geocoding each voter to her home census tract. We then assign each voter the demographics associated with that census tract.
+In addition to individual-level characteristics, we also match on sociodemographic information not available from the voter files. We do so by geocoding each voter to her home census tract using a geocoder provided by SmartyStreets. We then assign each voter various sociodemographics associated with that census tract.
 
 ### Surname Analysis {-}
-Although some of the registered voter files include self-reported race (Florida and Georgia), the others do not. In California, New York, and Texas, we use a methodology developed by Imai and Khanna [CITE]. Their wru package in R provides Bayesian predictions of race based on individuals' surname and census tract.
+Although some of the registered voter files include self-reported race (Florida and Georgia), others do not. In California, New York, and Texas, we use a methodology developed by [-@Imai2016]. Their wru package in R provides Bayesian predictions of race based on individuals' surname and census tract.
 
 ## Methodology {-}
-In each state included in this analysis, we match each voter who lives in an uncontested House district ("treated" voters) to 100 voters who live in contested district ("untreated" voters). Matches are done with replacement, performed using multiple sociodemographic indicators: whether the voter participated in the primary election in 2018;^[In New York State, where federal and local primaries were held on different dates, this measures participation in the federal primary.] whether the voter is registered as a Democrat or a Republican;^[In Texas and Georgia, voters do not register with parties. In the case of Texas, this indicates the primary the voter participated in (if any) in 2018. In Georgia, it indicates the party of the most recent primary in which the voter participated (if any).] year of birth; whether the voter identifies as female; census tract median income; share of the home census tract with post-high school education; and race.^[In the case of Florida and Georgia, race categories are self-reported in the voter file. In the case of California, Texas, and New York, these are the predicted probabilties of each voter's race based on his surname and home census tract.] We use a genetic matching algorithm [CITE] to determine the proper weights for these characteristics.^[Due to computing constraints, these weights were calculated using a random 1 percent of treated and untreated observations. As our match tables below indicate, doing so did not result in unacceptable matches.]
+In each state included in this analysis, we match each voter who lives in an uncontested House district ("treated" voters) to 100 voters who live in contested district ("untreated" voters). Matches are done with replacement, performed using multiple sociodemographic indicators: whether the voter participated in the primary election in 2018;^[In New York State, where federal and local primaries were held on different dates, this measures participation in the federal primary.] whether the voter is registered as a Democrat or a Republican;^[In Texas and Georgia, voters do not register with parties. In the case of Texas, this indicates the primary the voter participated in (if any) in 2018. In Georgia, it indicates the party of the most recent primary in which the voter participated (if any).] year of birth; whether the voter identifies as female; census tract median income; share of the home census tract with post-high school education; and race.^[In the case of Florida and Georgia, race categories are self-reported in the voter file. In the case of California, Texas, and New York, these are the predicted probabilties of each voter's race based on his surname and home census tract.] We use a genetic matching algorithm [@Sekhon2011] to determine the proper weights for these characteristics.^[Due to computing constraints, these weights were calculated using a random 1 percent of treated and untreated observations. As our match tables below indicate, doing so did not result in unacceptable matches.]
 
 Voters are matched with other voters within their home state. Doing so allows us to implicitly control for the effect of statewide races on participation. In Florida, where there were multiple hotly contested statewide races, we expect that any turnout effect from living in an uncontested district will be small. Conversely, the statewide races in New York were not very competitive; as such, we expect that the turnout effect in the Empire State will be larger.
 
@@ -88,3 +88,13 @@ stargazer(fl_reg, ny_reg, tx_reg,
           style = "ajps",
           omit.stat = c("f", "ser", "ll", "aic"))
 ```
+
+As Table \ref{tab:reg1} makes clear, voters who lived in uncontested congressional districts were less likely to cast a ballot in every state. This is perhaps unsurprising in states like California and New York where the statewide races were largely uncompetitive. These uncompetitive races likely featured lower political mobilization, and provided less incentive for voters.
+
+The depressive effect is more concerning in states where there *were* competitive statewide races. In Florida, for instance, Ron DeSantis beat Andrew Gillum in the gubernatorial race by just 32 thousand votes. The coefficient from Model 1 in \ref{tab:reg1} implies that more than 10,000 votes went uncast thanks to uncontested races. In these uncontested districts, just 17 percent of voters were registered as Republicans. Although the depressive effect of uncontested districts cannot account for all of DeSantis' margin of victory, it was likely responsible for a substantial portion of it.
+
+We reach similar conclusions in the case of Texas. Ted Cruz beat Beto O'Rourke by 215 thousand votes in the senate race. We estimate that the depressive effect of uncontested districts caused nearly 24 thousand votes to go uncast. Among individuals who did vote in these districts for senate, XX percent voted for O'Rourke. Once again, uncontested races cannot account for all of Ted Cruz's margin of victory. It is clear, however, that the effect is responsible for a nontrivial portion of it.
+
+\newpage
+# References {-}
+<div id="refs"></div>

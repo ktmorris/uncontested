@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/W32TeX) (preloaded format=pdflatex 2019.5.9)  23 MAY 2019 17:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/W32TeX) (preloaded format=pdflatex 2019.5.9)  31 MAY 2019 17:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -880,44 +880,44 @@ l.222
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
 l.222 
-      ]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 245.
-[3pdfTeX warning (ext4): destination with the same identifier (name{table.3}) h
-as been already used, duplicate ignored
+      ] [3pdfTeX warning (ext4): destination with the same identifier (name{tab
+le.3}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.245 \end{document}
-                    pdfTeX warning (ext4): destination with the same identifier
- (name{table.4}) has been already used, duplicate ignored
+l.250 \newpage
+              pdfTeX warning (ext4): destination with the same identifier (name
+{table.4}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.245 \end{document}
-                    ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 245.
+l.250 \newpage
+              ]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 261.
+[4]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 261.
 (./write.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 245.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 245.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 261.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 261.
 Package rerunfilecheck Info: File `write.out' has not changed.
-(rerunfilecheck)             Checksum: F33BE343563732077DE13E101134A65A;831.
+(rerunfilecheck)             Checksum: 8179383FCC0C9B4E42547569FA426122;925.
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 245.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 261.
  ) 
 Here is how much of TeX's memory you used:
- 12079 strings out of 494553
- 171776 string characters out of 6175838
- 269909 words of memory out of 5000000
- 15524 multiletter control sequences out of 15000+600000
- 59011 words of font info for 53 fonts, out of 8000000 for 9000
+ 12089 strings out of 494553
+ 171872 string characters out of 6175838
+ 269942 words of memory out of 5000000
+ 15527 multiletter control sequences out of 15000+600000
+ 63274 words of font info for 54 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 28i,11n,35p,1581b,329s stack positions out of 5000i,500n,10000p,200000b,80000s
-{c:/Users/morrisk/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ma
-thit.enc}{c:/Users/morrisk/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/l
-m/lm-mathsy.enc}{c:/Users/morrisk/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/
-dvips/lm/lm-ec.enc}<c:/Users/morrisk/AppData/Roaming/TinyTeX/texmf-dist/fonts/t
+ 28i,11n,35p,1587b,329s stack positions out of 5000i,500n,10000p,200000b,80000s
+{c:/Users/morrisk/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec
+.enc}{c:/Users/morrisk/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm
+-mathit.enc}{c:/Users/morrisk/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvip
+s/lm/lm-mathsy.enc}<c:/Users/morrisk/AppData/Roaming/TinyTeX/texmf-dist/fonts/t
 ype1/public/lm/lmbx10.pfb><c:/Users/morrisk/AppData/Roaming/TinyTeX/texmf-dist/
 fonts/type1/public/lm/lmbx12.pfb><c:/Users/morrisk/AppData/Roaming/TinyTeX/texm
 f-dist/fonts/type1/public/lm/lmmi10.pfb><c:/Users/morrisk/AppData/Roaming/TinyT
@@ -926,14 +926,15 @@ eX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/morrisk/AppData/Roaming
 oaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr6.pfb><c:/Users/morrisk/AppD
 ata/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/Users/morrisk
 /AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/mo
-rrisk/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb><c:/U
-sers/morrisk/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pf
+rrisk/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb><c:/U
+sers/morrisk/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pf
 b><c:/Users/morrisk/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lm
-sy7.pfb>
-Output written on write.pdf (3 pages, 207846 bytes).
+sy10.pfb><c:/Users/morrisk/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/publi
+c/lm/lmsy7.pfb>
+Output written on write.pdf (4 pages, 232394 bytes).
 PDF statistics:
- 128 PDF objects out of 1000 (max. 8388607)
- 110 compressed objects within 2 object streams
- 27 named destinations out of 1000 (max. 500000)
- 57 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 151 PDF objects out of 1000 (max. 8388607)
+ 131 compressed objects within 2 object streams
+ 33 named destinations out of 1000 (max. 500000)
+ 65 words of extra memory for PDF output out of 10000 (max. 10000000)
 
