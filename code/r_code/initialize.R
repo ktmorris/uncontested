@@ -1,4 +1,5 @@
 #### set up project
+library(readxl)
 library(splitstackshape)
 library(kableExtra)
 library(scales)
