@@ -3,29 +3,91 @@
 if(db_access){
   ## get ga history
   hist = read_fwf(
-    file = "D:/rolls/georgia/history/2018.TXT",
+    file = "D:/rolls/georgia/history/2018_full/2018.TXT",
     fwf_widths(c(3, 8, 8, 3, 2, 1, 1, 1)),
     col_types = "iidccccc"
   )
   
   colnames(hist) <- c("county", "voter_id", "election_date", "election_type", "party", "absentee", "provisional", "supplemental")
   
-  p_votes <- select(filter(hist, election_date == 20180522), county, voter_id, party) %>% 
+  votes_2018 <- select(hist, county, voter_id, election_date) %>% 
+    mutate(voted_primary = election_date == 20180522,
+           voted_general = election_date == 20181106) %>% 
+    group_by(county, voter_id) %>% 
+    summarize(voted_primary = max(voted_primary, na.rm = T),
+              voted_general = max(voted_general, na.rm = T))
+  
+  ### do party history
+  
+  p18 <- hist[hist$election_date == 20180522 & !is.na(hist$party), c("county", "voter_id", "party")]
+  p18$year <- 2018
+  
+  p16 <- read_fwf(
+    file = "D:/rolls/georgia/history/2016_full/2016.TXT",
+    fwf_widths(c(3, 8, 8, 3, 2, 1, 1, 1),
+               col_names = c("county", "voter_id", "election_date", "election_type", "party", "absentee", "provisional", "supplemental")),
+    col_types = "iidccccc"
+  )
+  
+  p16 <- p16[p16$election_date %in% c(20160301, 20160524) & !is.na(p16$party), c("county", "voter_id", "election_date", "party")] %>% 
+    group_by(county, voter_id) %>% 
+    filter(election_date == max(election_date)) %>% 
+    select(-election_date)
+  p16$year <- 2016
+  
+  p14 <- read_fwf(
+    file = "D:/rolls/georgia/history/2014_primary/2014_primary.TXT",
+    fwf_widths(c(3, 8, 8, 3, 2, 1, 1, 1),
+               col_names = c("county", "voter_id", "election_date", "election_type", "party", "absentee", "provisional", "supplemental")),
+    col_types = "iidccccc"
+  )
+  
+  p14 <- p14[!is.na(p14$party), c("county", "voter_id", "party")]
+  p14$year <- 2014
+  
+  p12 <- read_fwf(
+    file = "D:/rolls/georgia/history/2012_full/Voter History 2012.TXT",
+    fwf_widths(c(3, 8, 8, 3, 1, 1),
+               col_names = c("county", "voter_id", "election_date", "election_type", "party", "absentee")),
+    col_types = "iidccc"
+  )
+  
+  p12 <- p12[p12$election_date %in% c(3062012, 7312012) & !is.na(p12$party), c("county", "voter_id", "election_date", "party")] %>% 
+    group_by(county, voter_id) %>% 
+    filter(election_date == max(election_date)) %>% 
+    select(-election_date)
+  p12$year <- 2012
+  
+  p10 <- read_fwf(
+    file = "D:/rolls/georgia/history/2010_full/Voter History 2010.TXT",
+    fwf_widths(c(3, 8, 8, 3, 1, 1),
+               col_names = c("county", "voter_id", "election_date", "election_type", "party", "absentee")),
+    col_types = "iidccc"
+  )
+  
+  p10 <- p10[p10$election_date == 7202010 & !is.na(p10$party), c("county", "voter_id", "party")]
+  p10$year <- 2010
+  
+  p08 <- read_fwf(
+    file = "D:/rolls/georgia/history/2008_full/Voter History 2008.TXT",
+    fwf_widths(c(3, 8, 8, 3, 1, 1),
+               col_names = c("county", "voter_id", "election_date", "election_type", "party", "absentee")),
+    col_types = "iidccc"
+  )
+  
+  p08 <- p08[p08$election_date %in% c(2052008, 7152008) & !is.na(p08$party), c("county", "voter_id", "election_date", "party")] %>% 
+    group_by(county, voter_id) %>% 
+    filter(election_date == max(election_date)) %>% 
+    select(-election_date)
+  p08$year <- 2008
+  
+  party <- rbindlist(list(p08, p10, p12, p14, p16, p18)) %>% 
+    group_by(county, voter_id) %>% 
+    filter(year == max(year)) %>% 
     mutate(dem = party == "D",
            rep = party == "R") %>% 
-    group_by(county, voter_id) %>% 
-    summarize(dem = max(dem, na.rm = T),
-              rep = max(rep, na.rm = T)) %>% 
-    mutate(dem = ifelse(dem == -Inf, 0, dem),
-           rep = ifelse(rep == -Inf, 0, rep),
-           voted_primary = T)
-  
-  g_votes <- select(filter(hist, election_date == 20181106), county, voter_id)
-  g_votes$voted_general <- T
-  
-  g_votes <- g_votes %>% 
-    group_by(county, voter_id) %>% 
-    filter(row_number() == 1)
+    select(-year, -party)
+  rm(p08, p10, p12, p14, p16, p18)
   
   ## read in florida voter file
   ga <- dbGetQuery(db, "select COUNTY_CODE, REGISTRATION_NUMBER, GENDER, BIRTHDATE, RACE_DESC,
@@ -49,21 +111,21 @@ if(db_access){
            county = COUNTY_CODE,
            cd = CONGRESSIONAL_DISTRICT) %>% 
     select(-GENDER, -BIRTHDATE, -RACE_DESC, -RESIDENCE_HOUSE_NUMBER, -RESIDENCE_STREET_NAME, -RESIDENCE_STREET_SUFFIX)
-  
-  ga <- left_join(ga, p_votes, by = c("county", "voter_id")) %>% 
-    mutate(dem = ifelse(is.na(dem), 0, dem),
-           rep = ifelse(is.na(rep), 0, rep),
-           voted_primary = ifelse(is.na(voted_primary), F, voted_primary))
 
-  ga <- left_join(ga, g_votes, by = c("county", "voter_id")) %>% 
-    mutate(voted_general = ifelse(is.na(voted_general), F, voted_general))
+  ga <- left_join(ga, votes_2018, by = c("county", "voter_id")) %>% 
+    mutate(voted_general = ifelse(is.na(voted_general), 0, voted_general),
+           voted_primary = ifelse(is.na(voted_primary), 0, voted_primary))
+  
+  ga <- left_join(ga, party, by = c("county", "voter_id")) %>% 
+    mutate(dem = ifelse(is.na(dem), F, dem),
+           rep = ifelse(is.na(rep), F, rep))
   ## set up and geocode voter file
   
   ga <- geocode(ga) %>% 
     select(-street, -city, -zip, -state)
   
   saveRDS(ga, "./temp/ga_geocoded.RDS")
-  rm(hist, p_votes, g_votes)
+  rm(hist, votes_2018, party)
 }
 
 ga <- readRDS("./temp/ga_geocoded.RDS")
@@ -106,3 +168,4 @@ ga <- ga %>%
 ga <- ga[complete.cases(ga), ]
 
 saveRDS(ga, "./temp/georgia_race_census.RDS")
+
