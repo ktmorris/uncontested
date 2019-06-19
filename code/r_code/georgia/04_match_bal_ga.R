@@ -1,12 +1,8 @@
-library(Matching)
-library(scales)
-library(kableExtra)
-library(tidyverse)
-library(data.table)
 
 order <- fread("./raw_data/var_orders_fl.csv")
 
-ga <- readRDS("./temp/georgia_race_census.RDS")
+ga <- readRDS("./temp/georgia_race_census.RDS") %>% 
+  ungroup()
 
 load("./temp/mout_ga_1.RData")
 
@@ -32,23 +28,23 @@ matches <- left_join(matches, ga, by = "id")
 ##########
 means_prematch <- ga %>% 
   group_by(uncontested) %>% 
-  summarize_at(vars(dem, rep, yob, gender, white, black, latino.x, voted_primary, median_income, some_college), funs(mean(.)))
+  summarize_at(vars(gender, voted_primary, dem, rep, yob, white, black, latino.x, median_income, some_college), funs(mean(.)))
 
 means_postmatch <- matches %>% 
   group_by(treat) %>% 
-  summarize_at(vars(dem, rep, yob, gender, white, black, latino.x, voted_primary, median_income, some_college), funs(sum(weight * .) / sum(weight)))
+  summarize_at(vars(gender, voted_primary, dem, rep, yob, white, black, latino.x, median_income, some_college), funs(sum(weight * .) / sum(weight)))
 
 rm(matches, matches1, matches2)
 
-qqs_post <- lapply(c("dem", "rep", "yob", "gender", "white", "black", "latino.x", "voted_primary", "median_income", "some_college"), function(var){
-  j <- select(ga)
+qqs_post <- lapply(c("gender", "voted_primary", "dem", "rep", "yob", "white", "black", "latino.x", "median_income", "some_college"), function(var){
+  j <- select(ga, var)
   colnames(j) <- c("t")
   
   qqout  <- qqstats(j$t[mout$index.treated], j$t[mout$index.control])
   return(qqout)
-  })
+})
 
-qqs_pre <- lapply(c("dem", "rep", "yob", "gender", "white", "black", "latino.x", "voted_primary", "median_income", "some_college"), function(var){
+qqs_pre <- lapply(c("gender", "voted_primary", "dem", "rep", "yob", "white", "black", "latino.x", "median_income", "some_college"), function(var){
   j <- select(ga, var, uncontested)
   colnames(j) <- c("t", "uncontested")
   
@@ -68,7 +64,7 @@ PostQQmean <- c()
 PostQQmax <- c()
 
 i = 1
-for(var in c("dem", "rep", "yob", "gender", "white", "black", "latino.x", "voted_primary", "median_income", "some_college")){
+for(var in c("gender", "voted_primary", "dem", "rep", "yob", "white", "black", "latino.x", "median_income", "some_college")){
   TrMean <- unlist(c(TrMean, filter(means_prematch, uncontested == T) %>% select(var) %>% pull()))
   PreMean <- unlist(c(PreMean, filter(means_prematch, uncontested == F) %>% select(var) %>% pull()))
   
@@ -86,7 +82,7 @@ for(var in c("dem", "rep", "yob", "gender", "white", "black", "latino.x", "voted
 
 
 
-varnames <- c("dem", "rep", "yob", "gender", "white", "black", "latino.x", "voted_primary", "median_income", "some_college")
+varnames <- c("gender", "voted_primary", "dem", "rep", "yob", "white", "black", "latino.x", "median_income", "some_college")
 
 
 df <- data.frame("TrMean" = TrMean,

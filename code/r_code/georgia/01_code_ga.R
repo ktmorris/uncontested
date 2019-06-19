@@ -94,7 +94,7 @@ if(db_access){
                         RESIDENCE_HOUSE_NUMBER, RESIDENCE_STREET_NAME, RESIDENCE_STREET_SUFFIX,
                         RESIDENCE_CITY, RESIDENCE_ZIPCODE, LAST_NAME, CONGRESSIONAL_DISTRICT
                            from ga_roll_0319
-                       where VOTER_STATUS == 'A' and REGISTRATION_DATE <= 20181009") %>% 
+                       where VOTER_STATUS == 'A' and REGISTRATION_DATE <= 20181009 limit 10000") %>% 
     mutate_at(vars(RESIDENCE_HOUSE_NUMBER, RESIDENCE_STREET_NAME, RESIDENCE_STREET_SUFFIX), funs(ifelse(is.na(.), "", .))) %>%
     mutate(street = paste(RESIDENCE_HOUSE_NUMBER, RESIDENCE_STREET_NAME, RESIDENCE_STREET_SUFFIX),
            street = gsub("\\s+", " ", street),
@@ -163,7 +163,8 @@ ga$uncontested <- !is.na(ga$type)
 ga <- ga %>% 
   filter(!is.na(voter_id),
          cd != "1399999") %>% 
-  dplyr::select(-type)
+  dplyr::select(-type) %>% 
+  ungroup()
 
 ga <- ga[complete.cases(ga), ]
 
