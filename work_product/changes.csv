@@ -1,0 +1,5 @@
+State,Untreated,Treated,Control,factor
+New York,0.7,0.38,0.38,Non-Hispanic White
+New York,0.09,0.26,0.26,Non-Hispanic Black
+Texas,"69,724.11","53,469.99","53,223.60",Median Income
+Florida,0.31,0.51,0.51,Percent Democrats

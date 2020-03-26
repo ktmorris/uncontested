@@ -8,4 +8,226 @@
   url          = {https://www.washingtonpost.com/graphics/2018/politics/midterms-uncontested-candidates/},
 }
 
+@Article{Imai2016,
+  author    = {Kosuke Imai and Kabir Khanna},
+  title     = {Improving Ecological Inference by Predicting Individual Ethnicity from Voter Registration Records},
+  volume    = {24},
+  number    = {2},
+  pages     = {263--272},
+  doi       = {10.1093/pan/mpw001},
+  journal   = {Political Analysis},
+  publisher = {Cambridge University Press ({CUP})},
+  year      = {2016},
+}
+
+@Article{Sekhon2011,
+  author    = {Jasjeet S. Sekhon},
+  title     = {Multivariate and Propensity Score Matching Software with Automated Balance Optimization: {TheMatchingPackage} {forR}},
+  volume    = {42},
+  number    = {7},
+  doi       = {10.18637/jss.v042.i07},
+  journal   = {Journal of Statistical Software},
+  publisher = {Foundation for Open Access Statistic},
+  year      = {2011},
+}
+
+@Book{Mason2018,
+  author    = {Mason, Lilliana},
+  title     = {Uncivil Agreement},
+  date      = {2018-04-18},
+  publisher = {The University of Chicago Press},
+  isbn      = {022652454X},
+  pagetotal = {192},
+  url       = {https://www.ebook.de/de/product/29988704/lilliana_mason_uncivil_agreement.html},
+  ean       = {9780226524542},
+  year      = {2018},
+}
+
+@Article{Levitt1997,
+  author  = {Levitt, Steven and Wolfram, Catherine},
+  title   = {Decomposing the Sources of Incumbency Advantage in the U.S. House},
+  journal = {Legislative Studies Quarterly},
+  year    = {1997},
+  volume  = {22},
+  pages   = {45-60},
+}
+
+@Article{Squire1989,
+  author  = {Squire, Peverill},
+  title   = {Competition and Uncontested Seats in U.S. House Elections},
+  journal = {Legislative Studies Quarterly},
+  year    = {1989},
+  volume  = {14},
+  pages   = {281-295},
+}
+
+@Article{Wrighton1997,
+  author  = {Wrighton, J, Mark and Squire, Peverill},
+  title   = {Uncontested Seats and Electoral Competition for the U.S. House of Representatives Over Time},
+  journal = {Journal of Politics},
+  year    = {1997},
+  volume  = {59},
+  pages   = {452-468},
+}
+
+@Article{Konisky2011,
+  author  = {Konisky, David and Ueda, Michiko},
+  title   = {The Effects of Uncontested Elections on Legislator Performance},
+  journal = {Legislative Studies Quarterly},
+  year    = {2011},
+  volume  = {36},
+  pages   = {199-229},
+}
+
+@Article{Campbell1960,
+  author  = {Campbell, Angus},
+  title   = {Surge and Decline: A Study of Electoral Change},
+  journal = {Public Opinion Quarterly},
+  year    = {1960},
+  volume  = {24},
+  pages   = {397-418},
+}
+
+@Article{Campbell1991,
+  author  = {Campbell, James},
+  title   = {The Presidential Surge and its Midterm Decline in Congressional Elections, 1868-1988},
+  journal = {Journal of Politics},
+  year    = {1991},
+  volume  = {53},
+  pages   = {477-487},
+}
+
+@Article{Wattenberg2000,
+  author  = {Wattenberg, Martin and McAllister, Ian and Salvanto, Anthony},
+  title   = {How Voting is Like Taking an SAT Test: An Analysis of American Voter Rolloff},
+  journal = {American Politics Research},
+  year    = {2000},
+  volume  = {28},
+  pages   = {234-250},
+}
+
+@Article{Knack2003,
+  author  = {Knack, Stephen and Kropf, Martha},
+  title   = {Roll-Off at the Top of the Ballot: Intentional Undervoting in American Presidential Elections},
+  journal = {Politics and Policy},
+  year    = {2003},
+  volume  = {31},
+  pages   = {575-594},
+}
+
+@Article{Hall1987,
+  author  = {Hall, William and Aspin, Larry},
+  title   = {The Roll-Off Effect in Judicial Retention Elections},
+  journal = {Social Science Journal},
+  year    = {1987},
+  volume  = {24},
+  pages   = {415-427},
+}
+
+@Article{Bullock1996,
+  author  = {Bullock, Charles and Dunn, Richard},
+  title   = {Election Roll-Off: A Test of Three Explanations},
+  journal = {Urban Affairs Review},
+  year    = {1996},
+  volume  = {32},
+  pages   = {71-86},
+}
+
+@Article{Reilly2009,
+  author  = {Reilly, Shauna and Richey, Sean},
+  title   = {Ballot Question Readability and Roll-Off: The Impact of Language Complexity},
+  journal = {Political Research Quarterly},
+  year    = {2009},
+  volume  = {64},
+  pages   = {59-67},
+}
+
+@Article{Wielhouwer1994,
+  author  = {Wielhouwer, Peter and Lockerbie, Brad},
+  title   = {Party Contacting and Political Participation, 1952-90},
+  journal = {American Journal of Political Science},
+  year    = {1994},
+  volume  = {38},
+  pages   = {211-229},
+}
+
+@Book{Bishop2009,
+  author    = {Bishop, Bill},
+  title     = {The Big Sort: Why the Clustering of Like-Minded America is Tearing us Apart},
+  year      = {2009},
+  publisher = {Mariner Books},
+}
+
+@Article{Fraga2016,
+  author  = {Fraga, Bernard},
+  title   = {Redistricting and the Causal Impact of Race on Voter Turnout},
+  journal = {Journal of Politics},
+  year    = {2016},
+  volume  = {78},
+  pages   = {19-34},
+}
+
+@Article{Griffin2006,
+  author  = {Griffin, John and Keane, Michael},
+  title   = {Descriptive Representation and the Composition of African American Turnout},
+  journal = {American Journal of Political Science},
+  year    = {2006},
+  volume  = {50},
+  pages   = {998-1012},
+}
+
+@Article{Fairdosi2015,
+  author  = {Fairdosi, Amir Shawn and Rogowski, Jon},
+  title   = {Candidate Race, Partisanship, and Political Participation: When do Black Candidates Increase Black Turnout?},
+  journal = {Political Research Quarterly},
+  year    = {2015},
+  volume  = {68},
+  pages   = {337-349},
+}
+
+@Article{Winburn2009,
+  author  = {Winburn, Jonathan and Wagner, Michael},
+  title   = {Carving Voters Out: Redistricting's Influence on Political Information, Turnout, and Voting Behavior},
+  journal = {Political Research Quarterly},
+  year    = {2009},
+  volume  = {63},
+  pages   = {373-386},
+}
+
+@Article{Hayes2009,
+  author  = {Hayes, Danny and McKee, Seth},
+  title   = {The Participatory Effects of Redistricting},
+  journal = {American Journal of Political Science},
+  year    = {2009},
+  volume  = {53},
+  pages   = {1006-1023},
+}
+
+@Article{McKee2008,
+  author  = {McKee, Seth},
+  title   = {Redistricting and Familiarity with U.S. House Candidates},
+  journal = {American Politics Research},
+  year    = {2008},
+  volume  = {36},
+  pages   = {962-979},
+}
+
+@Article{Hood2010,
+  author  = {Hood, M.V. and McKee, Seth},
+  title   = {Stranger Danger: Redistricting, Incumbent Recognition, and Vote Choice},
+  journal = {Social Science Quarterly},
+  year    = {2010},
+  volume  = {91},
+  pages   = {344-358},
+}
+
+@Article{Yoshinaka2009,
+  author  = {Yoshinaka, Antoine and Murphy, Chad},
+  title   = {Partisan Gerrymandering and Population Instability: Completing the Redistricting Puzzle},
+  journal = {Political Geography},
+  year    = {2009},
+  volume  = {28},
+  pages   = {451-462},
+}
+
 @Comment{jabref-meta: databaseType:biblatex;}

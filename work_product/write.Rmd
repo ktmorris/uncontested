@@ -1,13 +1,27 @@
 ---
-title: "Uncontested Races and Turnout"
+title: "Uncontested Races and Turnout: The Case of 2018"
+thanks: Prepared for the 2020 Annual Meeting of the Southern Political Science Association
+author:
+- Peter Miller^[Researcher, Brennan Center for Justice at NYU School of Law (millerp@brennan.law.nyu.edu)]
+- Kevin Morris^[Researcher, Brennan Center for Justice at NYU School of Law (kevin.morris@nyu.edu)]
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output:
   bookdown::pdf_document2:
     toc: no
     fig_caption: yes
+    latex_engine: xelatex
+    keep_tex: true
 bibliography: "citations.bib"
 link-citations: yes
+fontsize: 12pt
+header-includes:
+    - \usepackage{rotating}
+    - \newcommand{\beginsupplement}{\setcounter{table}{0}  \renewcommand{\thetable}{A\arabic{table}} \setcounter{figure}{0} \renewcommand{\thefigure}{A\arabic{figure}}}
+abstract: |
+  Previous studies of uncontested U.S. House races, contested with either a Democratic or Republican candidate but not both, have made a number of contributions, including the observations that the rate of uncontested races is increasing over time, that these races are related to the incumbent's vote share in the previous election, and that they are more likely to occur in some regions of the country rather than others. An assessment of how uncontested congressional races influence turnout in other races happening in the same election is a notable gap in this literature. We theorize the distribution of uncontested U.S. House races is not random and is related to the redistricting process. We propose to measure the turnout effect of uncontested races using data from the five states that had more than one uncontested race the 2018 elections. We suspect the demobilizing effect of uncontested races will be highest in states that do not have competitive gubernatorial or senatorial races (e.g. California and New York), smaller in states with one competitive statewide race (e.g. Georgia and Texas), and smallest in states with multiple competitive statewide races (e.g. Florida). We will use voter registration files in this set of states to measure the effect an uncontested House race has on the likelihood of voting at the individual-level using matching methods. These registration files include address and other pertinent information for each voter, which, when combined with neighborhood-level data from the Census, will allow us to control for well-known socio-demographic factors that influence the likelihood of voting. We complement our analyses of these voter registration files with survey data to discuss other factors, like efficacy and political interest, that may also be associated with uncontested U.S. House races.
 ---
+\pagenumbering{gobble}
+\pagebreak
 ```{r setup, echo = F, message = F, warning = F}
 knitr::opts_knit$set(root.dir = "..", dev = "cairo_pdf")
 library(sandwich)
@@ -20,40 +34,77 @@ library(stargazer)
 loadfonts()
 
 ```
+# Introduction {-}
+
+What effect does living in an uncontested district have on a voter's decision to cast a ballot at all? In this paper we assess the turnout effect of an uncontested House race by means of a 25-to-1 genetic matching model comparing voters in an contested district with similar voters who resided in uncontested districts in the 2018 American elections. We include data from the six states that had more than one uncontested House race. We also estimate a similar model for the legislative elections in Wisconsin, which were contested in gerrymandered districts *and* featured 37 of 99 uncontested races in the state assembly.
+
+In five of these seven states we find significant and negative turnout effects. The effects on turnout in uncontested House races in California (uniquely the only independent commission in these data) and Georgia, however, are positive and significant. In five of these sevens states (this time Texas and Wisconsin are outliers) we find voters in the out-party are significantly less likely to vote. At this stage in the project we are exploring survey data related to the 2018 elections to try to identify additional mechanisms that might explain this set of findings.
+
+
+# Literature Review {-}
+
+The literature looking specifically at uncontested legislative elections is small. The norm in electoral studies is to exclude these races from the set of observations [see, among others, @Levitt1997] given a series of measurement and comparison issues that arise.^[For one example, Florida state law requires that uncontested races not be printed on the general election ballot (see Florida Statutes, \textsection 101.151(7)).] That being said, uncontested races tend to occur when the incumbent's vote share in the prior election is high and are more likely to occur in Southern states [@Squire1989]. Pivotal, realigning elections (e.g. 1932 and 1964) and the rate of "exposed seats" in midterm elections also significantly predict the incidence of uncontested House races [@Wrighton1997]. Holding an uncontested seat also has effects on the performance of the incumbent [@Konisky2011].
+
+There are other common features of electoral behavior that give us some sense of the expected effects of an uncontested House race on turnout overall. Perhaps the best known feature of American electoral behavior is found at the top of the ballot: the tendency for turnout to "surge" in presidential election years and "decline" in midterm election years [@Campbell1960; @Campbell1991]. In short, the presence of a presidential contest increases turnout in the election.^[But see @Knack2003 for evidence that voters may selectively abstain in the presidential contest.]
+
+In the top-middle of the ballot, and perhaps most relevant to the present study, we observe that voters selectively abstain in the congressional election in presidential year due to want of more information [@Wattenberg2000]. Relatedly, roll-off effects are often found at the bottom of the ballot, where voters are asked to weigh in on minor races like judicial retention elections [@Hall1987], initiatives, and referenda. Studies in this area suggest that by the time a voter is completing her ballot, she is fatigued and likely to miss contests at the end of the ballot [@Bullock1996]. Complex and legalistic language are also associated with roll-off [@Reilly2009].
+
+We speculate the absence of a House race may also have an effect on turnout, even if we anticipate the magnitude of this change is smaller, due to voters being unlikely to be fatigued at the near-top of the ballot and presumably negative, given the lack of attention from a usually high-profile race and the attendant mobilization efforts [@Wielhouwer1994].
+
+Taking a step back from the political dynamics of an election, we observe uncontested House races in the context of increasing demographic "sorting" on the basis of ideological and lifestyle congruence with one's neighbors [@Bishop2009]. With regard to turnout and representation, the demographic sorting phenomenon is relevant to discussions of majority-minority districting and minority turnout [@Fraga2016]. We find some evidence of an ideological basis for abstaining in majority-minority districts insofar that descriptive representation increases turnout among liberal black voters, but has a less pronounced effect among moderate and conservative blacks [@Griffin2006; @Fairdosi2015].
+
+A vital component of the discussion of representation in districts is the practice of drawing electoral districts. The United States is exception, even when compared to other countries with majoritarian electoral systems, with regard to the controversial and heavily-litigated space of redistricting given most of the time the process is done by state legislators themselves with the attendant questions about conflicts of interest and fairness.
+
+The U.S. Supreme Court thinks of partisan gerrymandering as "the drawing of legislative district lines to subordinate adherents of one political party and entrench a rival party in power."^[See the majority decision in the 2015 case *Arizona State Legislature v. Arizona Independent Redistricting Commission* for the source of this definition. The subsequently found partisan gerrymandering questions are non-judiciable and beyond the remit of the federal judiciary in the 2019 case *Rucho v. Common Cause*. That being said, the Court in *Rucho* did not fundamentally disagree with the Court's definition of the concept of partisan gerrymandering in and of itself.]
+
+Biased districting can take two forms, "packing" and "cracking." As the U.S. Supreme Court found in the 1986 case *Davis v. Bandemer* "These are familiar techniques of political gerrymandering. Democratic (or Republican, as the case may be) votes are 'stacked' and 'wasted' by creating districts where Democrats form majorities much greater than the 50% necessary to carry those districts. Concurrently, Republican votes are spread among districts in which they form safe, perhaps 55%, majorities, and Democratic votes are 'cracked' or 'split' by dispersing them in such a way as to be ineffectual." We speculate a similar mechanism is at work in the uncontested district-based races, in that parties draw the districts to "pack" the supporters of one party into a district with the intention to make surrounding areas safe for the party drawing the districts.
+
+The literature shows that redistricting can have a negative effect on turnout by decreasing the likelihood that a constituent recognizes her representative [@Winburn2009; @Hayes2009; @McKee2008; @Hood2010]. Here, too, we speculate that an uncontested House race will simplify the costs of recognizing the incumbent representative, though the direction of that effect is not clearly established in the literature.
+
+Taken together, we suggest the literature cited here operates akin to a series of logical stepping stones to motivate the empirical analyses we present below. In short, we observe that the literature has not yet considered the upward effects on turnout of the absence of a U.S. House race. House races are a bit more complicated than Senate races given the districting process, and we suggest the malleability of the district drawing can allow for partisans directing the process to protect their fellow partisans and leave the opposition scrambling to defend districts [@Yoshinaka2009].
+
 
 # Data and Methodology {-}
-To investigate whether voters who live in uncontested Congressional districts are less likely to cast a ballot, we examine data from the 2018 midterm elections. In 2018, there were 36 districts in which only one major party candidate ran for office [@wapo].^[Of these, 17 were truly uncontested, while 19 featured a race with a minor party candidate.] In the interest of increasing the robustness of our results, we focus on states which were home to multiple uncontested districts: California, Florida, Georiga, New York, and Texas, which account for 22 of the 36 uncontested districts.^[Massachusetts also had multiple uncontested House districts. However, because they do not maintain an accessible statewide registered voter file, they are not included in our analysis.]
+To investigate whether voters who live in uncontested Congressional districts are less likely to cast a ballot, we examine data from the 2018 midterm elections. In 2018, there were 36 districts in which only one major party candidate ran for office [@wapo].^[Of these, 17 were truly uncontested, while 19 featured a race with a minor party candidate.] We focus on states which were home to multiple uncontested districts: California, Florida, Georiga, Massachusetts, New York, and Texas, which account for 26 of the 36 uncontested districts.
 
-In each of the states included in this study we match voters in uncontested districts to voters in contested districts. We then compare the turnout rates among these two groups.
+In addition to the states with multiple uncontested races, we include assembly districts in Wisconsin. Of Wisconsin's 99 state assembly districts, a full 37 went uncontested. This map was also challenged on partisan gerrymandering grounds and invalidated by a split three judge panel in the 2016 \textit{Whitford v. Gill} case in the Western District of Wisconsin. Upon appeal, the U.S. Supreme Court overturned this finding by concluding the plaintiffs failed to properly demonstrate standing (see the 2018 decision in \textit{Gill v. Whitford}).
+
+In each of the states included in this study we "match" voters in uncontested districts to voters in contested districts. We then compare the turnout rates among these two groups.
+
 
 ## Data {-}
 
 ### Registered Voter Files {-}
-Our primary data for this analysis are the statewide registered voter files. All of these voter files were acquired directly from the state in question, with the exception of Texas, whose data was provided by the firm Aristotle. Each registered voter file contains a rich set of information: dates of birth, home addresses, gender, and party affiliation, for instance. They also include indicators of elections in which each voter cast a ballot. From these files, we can see turnout at the individual level. For many of our indicators, we match based on individual-level characteristics from the voter files.
+Our primary data for this analysis are the statewide registered voter files. Several of these files came directly from the states studied: in California, Florida, Georgia, and New York we use files obtained from the Secretary of State. The files for Massachusetts and Wisconsin come from the data vendor L2, and the Texas file comes from data vendor Aristotle. Each registered voter file contains a rich set of information such as dates of birth, home addresses, gender, and party affiliation. They also include indicators of elections in which each voter cast a ballot. From these files, we can see turnout at the individual level. For many of our indicators, we match based on individual-level characteristics from the voter files.
 
 ### Census Data {-}
 In addition to individual-level characteristics, we also match on sociodemographic information not available from the voter files. We do so by geocoding each voter to her home census tract using a geocoder provided by SmartyStreets. We then assign each voter various sociodemographics associated with that census tract.
 
+### Geocoding {-}
+
+The registered voter files do not include economic or educational characteristics for voters. To incorporate sociodemographic information about voters in uncontested and contested districts, we assign voters the average characteristics of the census tract in which they live. Vendor-provided registration files (that is to say, Massachusetts, Texas, and Wisconsin) include voters' home census tracts. To determine the home census tract of voters in states where we received voter files directly from the state, voters' home addresses are geocoded using a geocoder provided by address verification firm SmartyStreets. The geocoder successfully geocoded more than 95 percent of voters in each state (and in most states more than 98 percent). Voters whose addresses could not be geocoded are excluded from the analysis. However, because of how few voters went uncoded, this is unlikely to affect the analysis.
+
 ### Surname Analysis {-}
-Although some of the registered voter files include self-reported race (Florida and Georgia), others do not. In California, New York, and Texas, we use a methodology developed by [-@Imai2016]. Their wru package in R provides Bayesian predictions of race based on individuals' surname and census tract.
+Although some of the registered voter files include self-reported race (Florida and Georgia), others do not. In California, Massachusetts, New York, Texas, and Wisconsin, we use the methodology developed by @Imai2016. This methodology incorporates information from the Census Bureau about the racial characteristics of American surnames, as well as information about the racial composition of a voter's census tract to predict her race.
 
 ## Methodology {-}
-In each state included in this analysis, we match each voter who lives in an uncontested House district ("treated" voters) to 100 voters who live in contested district ("untreated" voters). Matches are done with replacement, performed using multiple sociodemographic indicators: whether the voter participated in the primary election in 2018;^[In New York State, where federal and local primaries were held on different dates, this measures participation in the federal primary.] whether the voter is registered as a Democrat or a Republican;^[In Texas and Georgia, voters do not register with parties. In the case of Texas, this indicates the primary the voter participated in (if any) in 2018. In Georgia, it indicates the party of the most recent primary in which the voter participated (if any).] year of birth; whether the voter identifies as female; census tract median income; share of the home census tract with post-high school education; and race.^[In the case of Florida and Georgia, race categories are self-reported in the voter file. In the case of California, Texas, and New York, these are the predicted probabilties of each voter's race based on his surname and home census tract.] We use a genetic matching algorithm [@Sekhon2011] to determine the proper weights for these characteristics.^[Due to computing constraints, these weights were calculated using a random 1 percent of treated and untreated observations. As our match tables below indicate, doing so did not result in unacceptable matches.]
 
-Voters are matched with other voters within their home state. Doing so allows us to implicitly control for the effect of statewide races on participation. In Florida, where there were multiple hotly contested statewide races, we expect that any turnout effect from living in an uncontested district will be small. Conversely, the statewide races in New York were not very competitive; as such, we expect that the turnout effect in the Empire State will be larger.
+In each state included in this analysis, we match each actively registered voter who lives in an uncontested House district ("treated" voters) to 25 voters who live in contested district ("untreated" voters). Matches are done with replacement, performed using multiple sociodemographic indicators: whether the voter is registered as a Democrat or a Republican;^[In Texas and Georgia, voters do not register with parties. In the case of Texas, this indicates the primary the voter participated in (if any) in 2018. In Georgia, it indicates the party of the most recent primary in which the voter participated (if any).] year of birth (in Wisconsin, where this information is not available, we use the median age of a voter's census tract); whether the voter identifies as female; census tract median income; share of the home census tract with post-high school education; and race.^[In the case of Florida and Georgia, race categories are self-reported in the voter file. In the case of California, Texas, Massachusetts, and New York, these are the predicted probabilities of each voter's race based on his surname and home census tract.] We use a genetic matching algorithm [@Sekhon2011] to determine the proper weights for these characteristics.^[Due to computing constraints, these weights were calculated using a random 1 percent of treated and untreated observations. As our match tables below indicate, doing so did not result in unacceptable matches.]
+
+Voters are matched with other voters within their home state. Doing so allows us to implicitly control for the effect of statewide races on participation. In Florida, where there were multiple highly contested statewide races, we expect that any turnout effect from living in an uncontested district will be small. Conversely, the statewide races in New York were not very competitive; as such, we expect that the turnout effect in the Empire State will be larger.
+
 
 # Results {-}
 
-Tables \ref{tab:tx-match}, \ref{tab:fl-match}, \ref{tab:ny-match}, \ref{tab:ga-match}, and \ref{tab:ca-match} present the outcome of these matches. In every state, treated and untreated observations are well balanced.
+Tables \ref{tab:ca-match} --- \ref{tab:wi-match} present the outcome of these matches. In every state, treated and untreated observations are well balanced.
 
-```{r tx-match-table, echo = F}
-t <- readRDS("./temp/match_table_tx.rds")
-j <- knitr::kable(t, booktabs = T, caption = "(\\#tab:tx-match) Results of Texas Matching", linesep = "") %>% 
+```{r ca-match-table, echo = F}
+t <- readRDS("./temp/match_table_ca.rds")
+j <- knitr::kable(t, booktabs = T, caption = "(\\#tab:ca-match) Results of California Matching", linesep = "") %>% 
   add_header_above(c(" " = 1, "Means: Unmatched Data" = 2, "Means: Matched Data" = 2, "Percent Improvement" = 4), align = "c") %>% 
   kable_styling(latex_options = c("scale_down", "HOLD_position"))
 j
 ```
-
 
 ```{r fl-match-table, echo = F}
 t <- readRDS("./temp/match_table_fl.rds")
@@ -63,6 +114,21 @@ j <- knitr::kable(t, booktabs = T, caption = "(\\#tab:fl-match) Results of Flori
 j
 ```
 
+```{r ga-match-table, echo = F}
+t <- readRDS("./temp/match_table_ga.rds")
+j <- knitr::kable(t, booktabs = T, caption = "(\\#tab:ga-match) Results of Georgia Matching", linesep = "") %>% 
+  add_header_above(c(" " = 1, "Means: Unmatched Data" = 2, "Means: Matched Data" = 2, "Percent Improvement" = 4), align = "c") %>% 
+  kable_styling(latex_options = c("scale_down", "HOLD_position"))
+j
+```
+
+```{r ma-match-table, echo = F}
+t <- readRDS("./temp/match_table_ma.rds")
+j <- knitr::kable(t, booktabs = T, caption = "(\\#tab:ma-match) Results of Massachusetts Matching", linesep = "") %>% 
+  add_header_above(c(" " = 1, "Means: Unmatched Data" = 2, "Means: Matched Data" = 2, "Percent Improvement" = 4), align = "c") %>% 
+  kable_styling(latex_options = c("scale_down", "HOLD_position"))
+j
+```
 
 ```{r ny-match-table, echo = F}
 t <- readRDS("./temp/match_table_ny.rds")
@@ -71,29 +137,82 @@ j <- knitr::kable(t, booktabs = T, caption = "(\\#tab:ny-match) Results of New Y
   kable_styling(latex_options = c("scale_down", "HOLD_position"))
 j
 ```
-After matching, simple regression analyses are performed to test whether voters in uncontested districts were less likely to cast a ballot. Because our variable of interest (participation in the 2018 election) is binary, these are fitted using a logit model. Table \ref{tab:reg1} reports the results of these regressions.
-```{r logit-regs, echo = F, results = "asis", message = F}
-fl_reg <- readRDS("./temp/match_reg_fl_1.rds")
-tx_reg <- readRDS("./temp/match_reg_tx_1.rds")
-ny_reg <- readRDS("./temp/match_reg_ny_1.rds")
 
-stargazer(fl_reg, ny_reg, tx_reg,
-          header = F,
-          type = "latex",
-          column.labels = c("Florida", "New York", "Texas"),
-          covariate.labels = c("D(Voter Lived in Uncontested District)"),
-          title = "(\\#tab:reg1) Turnout Effect of Living in Uncontested District",
-          dep.var.labels = "Participation in 2018 General Election",
-          table.placement = "H",
-          style = "ajps",
-          omit.stat = c("f", "ser", "ll", "aic"))
+```{r tx-match-table, echo = F}
+t <- readRDS("./temp/match_table_tx.rds")
+j <- knitr::kable(t, booktabs = T, caption = "(\\#tab:tx-match) Results of Texas Matching", linesep = "") %>% 
+  add_header_above(c(" " = 1, "Means: Unmatched Data" = 2, "Means: Matched Data" = 2, "Percent Improvement" = 4), align = "c") %>% 
+  kable_styling(latex_options = c("scale_down", "HOLD_position"))
+j
 ```
 
-As Table \ref{tab:reg1} makes clear, voters who lived in uncontested congressional districts were less likely to cast a ballot in every state. This is perhaps unsurprising in states like California and New York where the statewide races were largely uncompetitive. These uncompetitive races likely featured lower political mobilization, and provided less incentive for voters.
+```{r wi-match-table, echo = F}
+t <- readRDS("./temp/match_table_wi.rds")
+j <- knitr::kable(t, booktabs = T, caption = "(\\#tab:wi-match) Results of Wisconsin Matching", linesep = "") %>% 
+  add_header_above(c(" " = 1, "Means: Unmatched Data" = 2, "Means: Matched Data" = 2, "Percent Improvement" = 4), align = "c") %>% 
+  kable_styling(latex_options = c("scale_down", "HOLD_position"))
+j
+```
 
-The depressive effect is more concerning in states where there *were* competitive statewide races. In Florida, for instance, Ron DeSantis beat Andrew Gillum in the gubernatorial race by just 32 thousand votes. The coefficient from Model 1 in \ref{tab:reg1} implies that more than 10,000 votes went uncast thanks to uncontested races. In these uncontested districts, just 17 percent of voters were registered as Republicans. Although the depressive effect of uncontested districts cannot account for all of DeSantis' margin of victory, it was likely responsible for a substantial portion of it.
+Before advancing to the discussion of the turnout effects of uncontested districts, it is worth pausing to examine the characteristics of voters who lived in uncontested districts. In every state, voters of color are overrepresented --- often vastly so --- in districts where just one major party candidate ran. In New York, for instance, we estimate that just 38 percent of voters in uncontested districts were white while 70 percent of voters in contested districts were white. Black voters appear especially likely to live in uncontested districts. In Florida and Georgia, where self-reported race information is available, this is certainly the case: Black voters make up just 10 percent of voters in contested districts in Florida, but 29 percent of voters in uncontested areas. In Georgia, these figures are 28 and 43 percent respectively.
 
-We reach similar conclusions in the case of Texas. Ted Cruz beat Beto O'Rourke by 215 thousand votes in the senate race. We estimate that the depressive effect of uncontested districts caused nearly 24 thousand votes to go uncast. Among individuals who did vote in these districts for senate, XX percent voted for O'Rourke. Once again, uncontested races cannot account for all of Ted Cruz's margin of victory. It is clear, however, that the effect is responsible for a nontrivial portion of it.
+In each state except for New York, voters in uncontested districts are also more likely to live in census tracts with lower median incomes. The average voter in an uncontested district in Texas lived in a census tract where the median income was just \$53 thousand, while voters in contested districts lived in census tracts with a median income of nearly \$70 thousand. Similarly, Democrats were overrepresented in each state with multiple uncontested house races while Republicans were overrepresented. These matching outputs make clear that the population here under study is not representative of the statewide electorate. Voters in uncontested districts tend to be lower-income minority voters --- that is to say, voters who already face systematic barriers to political participation and representation.
+
+After matching each treated voter to the 25 untreated voters, we run a simple logistic regression whose dependent variable indicates whether a voter cast a ballot in 2018 midterm elections. Each untreated, or matched, observation is weighted according to the number of treated voters for which it served as a match. Figure \ref{fig:overall-plots} presents the overall treatment effect in each state.
+
+```{r overall-plots, echo = FALSE, message = F, warning = F, fig.height = 4.5, fig.cap = "\\label{fig:overall-plots}Estimated Effect of Living in Uncontested District for All Voters", out.extra = '', fig.pos = "H", fig.align = "center"}
+load("./temp/_reg_plots.rdata")
+p <- p +
+  theme(plot.caption = element_text(hjust = 0))
+print(p)
+```
+
+In each state except California and Georgia, voters who lived in uncontested districts were statistically significantly less likely to turn out than similar voters in other congressional districts. In some states, these effects are surprisingly large: in New York, Texas, and Wisconsin, voters in uncontested districts were at least 5 percentage points less likely to vote than similar voters elsewhere in the state. This is especially surprising in the case of Texas, where a highly-advertised statewide Senate race was waged.
+
+Examining the effects of living in uncontested districts on all voters, however, obscures the differential effect of the treatment on different sorts of voters. In the models below, logistic regressions are run on the subset of treated observations in a given group and their matches, regardless of whether their match shared those characteristics. In other words, if a 39 year old treated voter in California matched with an untreated 40 year old voter, both voters would be included in the "Younger than 40" model. If that untreated voter also matched with a 41 year old voter, the untreated voter would also be included in the "40 to 65" model.
+
+We begin by examining whether the treatment has a differential effect based on the party affiliation of voters in uncontested districts.^[Although party membership is defined differently in some states that do not have formal party registration, it is uniformly defined *within* each state.] We define "represented voters" as individuals who are affiliated with the same party as the unchallenged candidate; "unrepresented voters," then, are individuals affiliated with the opposite party. Figure \ref{fig:party} presents the estimated treatment effect for represented and unrepresented voters in each state.^[In all states but Georgia and Wisconsin, each uncontested race went uncontested by Republicans --- "Represented Voters", therefore, are usually Democrats, while "Unrepresented Voters" are generally Republicans.]
+
+We find significant differences between the two groups: in four states (California, Florida, Georgia, and Massachusetts), members of the party who ran a candidate were *more* likely to vote than members of that party elsewhere in the state, while members of the unrepresented party were either *less* likely to vote or (in the case of Georiga) turned out at statistically indistinguishable rates from other members of their party. In a fifth state (New York), the treatment effect depressed turnout among represented and unrepresented voters alike, but it had a larger negative effect on opposite party members. It is worth noting that although this relationship is inverted in Texas, our calculation of party affiliation in the Lone Star State is limited to the primary in which a voter participated only in 2018 --- the majority of voters in uncontested races, therefore, have no party affiliation and are dropped from this analysis.
+
+```{r party, echo = FALSE, message = F, warning = F, fig.height = 4.5, fig.cap = "\\label{fig:party}Estimated Effect of Living in Uncontested District by Party Affiliation", out.extra = '', fig.pos = "H", fig.align = "center"}
+load("./temp/compare_dem_rep_reg_plots.rdata")
+p <- p + labs(caption = "Note: Models include all controls.") +
+  theme(plot.caption = element_text(hjust = 0))
+print(p)
+```
+
+Women and men similarly responded differently to living in an uncontested district. As Figure \ref{fig:men-women} shows, men were the treatment effect for men was substantially larger than it was for women; in six out of the seven states, the difference was statistically significant. In Florida and Massachusetts, women who lived in uncontested districts were not statistically significantly less likely to vote than women that lived elsewhere ---  the negative overall effect, therefore, is driven by men's decreased propensity to vote. In Georgia, where we uncover an overall positive effect of living in an uncontested district, the breakout by gender demonstrates that this is driven by women's increased propensity to participate: men in uncontested districts in Georgia were less likely to vote than men in other parts of the state. Although the treatment is associated with depressed turnout for women in California, New York, and Wisconsin, the treatment effect for women is smaller than for men. The effect size for women in Texas is statistically indistinguishable from that of men.
+
+```{r men-women-plots, echo = FALSE, message = F, warning = F, fig.height = 4.5, fig.cap = "\\label{fig:men-women}Estimated Effect of Living in Uncontested District by Sex", out.extra = '', fig.pos = "H", fig.align = "center"}
+load("./temp/compare_men_women_reg_plots.rdata")
+p <- p + labs(caption = "Note: Models include all controls.") +
+  theme(plot.caption = element_text(hjust = 0))
+print(p)
+```
+
+Finally, we break the estimated treatment effects out by voters' age, presented in Figure \ref{fig:age-plots}. Again, we find substantial variation in the estimated effect within most of our study states.^[Because Wisconsin does not track voters' ages, we exclude the state from this analysis.] In four of the six states, young voters in uncontested districts were *more* likely to turn out than their peers elsewhere in the state. In Florida and Massachusetts, this contrasts sharply with the estimated effect on older residents, for whom the treatment effect was negative and significant. In California, where the treatment is associated with an increased propensity to vote for all voters, the effect is much larger for the youngest voters. The positive treatment effect is also much higher for the youngest voters in Georgia than any other age group.
+
+```{r age-plots, echo = FALSE, message = F, warning = F, fig.height = 4.5, fig.cap = "\\label{fig:ages}Estimated Effect of Living in Uncontested District by Age", out.extra = '', fig.pos = "H", fig.align = "center"}
+load("./temp/compare_ages_reg_plots.rdata")
+p <- p + labs(caption = "Note: Models include all controls.") +
+  theme(plot.caption = element_text(hjust = 0))
+print(p)
+```
+
+# Discussion and Conclusion {-}
+
+Our preliminary findings uncover multiple factors at play. We did not expect to find negative treatment effects in any of states studied, and yet voters in uncontested districts in California and Georgia were significantly more likely to vote than similarly situated voters in contested house races. Nevertheless, five of the seven states included in the analysis behaved as expected. In Florida, Massachusetts, New York, Texas, and Wisconsin, voters where a house (or assembly) seat was uncontested voted at significantly lower rates. The magnitude of these decreases was often quite large --- in New York, for instance, voters in uncontested districts were only about 90 percent as likely to cast a ballot as individuals in contested districts. In Wisconsin, the effect was even larger: registered voters in the 37 uncontested districts were just 70 percent as likely to turn out. It appears that the political preferences of uncontested districts are generally as a whole underrepresented in statewide races.
+
+*As a whole*, however, obscures important discrepancies in how voters of different parties respond to treatment. In 4 of the 7 states, voters who affiliated with the party of the unchallenged candidate were *more* likely to participate than similar voters of the same party elsewhere in the state. This increased propensity to vote servely undermines the rational theory of voting. As discussed earlier, under Downs' equation, voters in uncontested districts cannot be more likely to cast a ballot --- and yet, in the 2018 midterm elections, represented voters were more likely to participate.
+
+In New York, Democrats (represented voters) in uncontested districts were less likely to vote than Democrats elsewhere. The treatment effect for Democrats, however, was smaller than for Republicans. In five of seven states, therefore, the treatment effect was significantly larger (that is to say, depressed turnout more) for unrepresented voters than represented voters.^[As discussed above, the party affiliation results for Texas should be taken lightly. Because the current analysis bases party affiliation only off of the primary in which a voter participated in 2018, only 19 percent of Texas voters are assigned to a party. These voters are unlikely to be representative of the whole electorate. The next version of this paper will use data from L2, which models party affiliation based on more historical data.] Although this differential is unexplainable under the rational theory of voting, it is not surprising given the body of scholarship demonstrating that voters who feel their representatives do not reflect their values are less likely to vote. An individual whose party is not even represented on the ballot is likely to feel unrepresented. Although the CCES in 2018 did not ask voters about their perceived efficacy, voters in uncontested districts in 2014 were less likely to report that they believed they were well represented.
+
+As many have noted [cite], the 2018 election served in many ways as a referendum on the presidency of Donald Trump. Ballots in 2018, therefore, also carried a highly symbolic value: although Trump was not on the ballot, news stories reported that many individuals cast their ballots to register support or disapproval of the president. It is possible that the symbolic nature of these ballots operated differently in contested than uncontested districts. In uncontested districts, a large majority of the electorate belongs to a single political party. As @Mason2018 and others have demonstrated, voters with few crosscutting identities and few social ties with members of the opposite party are more likely to view politics as a group struggle --- and, perhaps, therefore more likely to ascribe symbolic value to their votes. Voters in uncontested districts are likely to have more (politically) homogenous social networks, which may account for the increased propensity of represented voters to cast a ballot.
+
+The opposite logic may hold true for unrepresented voters in uncontested districts. These voters may be among the *most* likely to have social ties with voters of the other party, simply because so many of their neighbors affiliate with the opposite party. Their relationships with members of the opposite party may engender less intense feelings about Trump (either positive or negative) than members of the same party elsewhere in the state, and may therefore ascribe less symbolic meaning to their ballot. Their (relative) ambivalence toward the Trump Administration, combined with the decrease in "rationality" of voting and their decreased feelings of efficacy may all contribute to their depressed turnout.
+
+The consistent difference in treatment effect for men and women is equally surprising. Similarly, the large positive effect for the youngest voters in four out of the six states is puzzling. It is possible that women and younger voters are more impacted by the symbolic nature of the vote, as discussed above, than older voters and men. By the same token, we may simply be picking up the partisan affiliation of these voters: younger voters and women are more likely to be registered Democrats. The vast majority of the represented voters, as defined above, are Democrats. However, these gender and age differences continue to hold even in Georgia, where each major party left one race uncontested. If the gender and age effects were operating merely through an individual's status as an (un)represented voter we would expect these effects to wash one another out in Georgia. This is not the case. 
 
 \newpage
 # References {-}
