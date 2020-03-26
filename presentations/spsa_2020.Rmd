@@ -1,0 +1,170 @@
+---
+title: "The Up-Ballot Implications of Uncontested US House Races"
+subtitle: "The Case of 2018"
+shorttitle: "Other"
+author:
+- Kevin Morris
+- Peter Miller
+institute: Brennan Center for Justice
+date: Southern Political Science Association, 2020
+output:
+  beamer_presentation:
+    latex_engine: xelatex
+    theme: "Berlin"
+    keep_tex: true
+bibliography: "../work_product/citations.bib"
+link-citations: true
+---
+```{r setup, echo = F, message = F, warning = F}
+knitr::opts_knit$set(dev = "cairo_pdf")
+library(systemfit)
+library(AER)
+library(sandwich)
+library(lmtest)
+library(scales)
+library(tidyverse)
+library(extrafont)
+library(kableExtra)
+library(stargazer)
+library(data.table)
+loadfonts()
+```
+
+### Overview
+
+>* Question: Does residing in an uncontested U.S. House district have an effect on casting a ballot at all? What are the ``upward" turnout effects of an absent down-ballot race?
+
+>* Data: Voter registration data from the six states with multiple uncontested House races in the 2018 election 
+>    * and Wisconsin (for the legislative election)
+
+>* Method: A genetic matching model comparing registrants in contested and uncontested districts
+
+>* Findings: The turnout effect is negative in five of the seven states (not CA and GA)
+>    * and larger for the ``represented party" in five of the seven (not Texas and Wisconsin)
+
+
+### Prior Literature I
+
+>* Studies of uncontested House races
+>    * More common in the South and predicted by incumbent's vote share in prior elections [@Squire1989; @Wrighton1997]
+
+>* Patterns in American voting behavior
+>    * Surge and decline in presidential and midterm election years [@Campbell1960; @Campbell1991]
+>    * Roll-off in congressional and ballot measure contests [@Wattenberg2000; @Bullock1996; @Hall1987]
+>    * Party-based mobilization [@Wielhouwer1994]
+
+
+### Prior Literature II
+
+>* Redistricting and representation
+>    * Sorting [@Bishop2009] and ethnic turnout in majority-minority districts [@Griffin2006; @Fairdosi2015]
+>    * "packing" and "cracking" for advantage
+>    * Redistricting reduces turnout by disrupting incumbent recall [@Winburn2009; @Hayes2009]
+
+### Data
+
+>* Registered Voter Files
+>    * Some directly from the state, some from Aristotle and L2
+>    * These include a host of information about voters' age, sex, address, (sometimes) race, and others
+
+>* SmartyStreets Geocoder + Census Data
+
+>* We leverage the Bayesian racial probability estimate methodology developed by @Imai2016 for states without self-reported race data.
+
+### Methodology
+
+>* Genetic matching developed by @Sekhon2011. The weights are estimated using a random 1 percent sample of treated and untreated observations.
+
+>* Each treated voter is matched to 25 untreated voter, and matching is done with replacement.
+
+>* The matching procedure resulted in strong improvements across all the factors on which we match.
+
+### Match Output
+
+```{r, echo=FALSE,out.width="49%", out.height="49%",fig.show='hold',fig.align='center'}
+knitr::include_graphics(c("../temp/perc_white_spsa.png", "../temp/perc_black_spsa.png"))
+```
+
+### Match Output
+
+```{r, echo=FALSE,out.width="49%", out.height="49%",fig.show='hold',fig.align='center'}
+knitr::include_graphics(c("../temp/income_spsa.png", "../temp/perc_dems_spsa.png"))
+```
+
+### Regression Results
+
+```{r, echo=FALSE,out.width="85%", out.height="85%",fig.show='hold',fig.align='center', warning=F}
+load("../temp/_reg_plots.rdata")
+p <- p +
+  theme(plot.caption = element_text(hjust = 0),
+        text = element_text(size = 25),
+        axis.text.y = element_text(size = 25)) +
+  ggstance::geom_pointrangeh(aes(y = term, x = estimate, 
+                                          xmin = conf.low, xmax = conf.high, colour = model, 
+                                          shape = model), position = ggstance::position_dodgev(height = -.5), 
+                                      fill = "white", fatten = 5, size = 1.5, show.legend = T)
+ggsave("../output/plot1.png", width = 11, height = 7.25, units = "in")
+knitr::include_graphics(c("../output/plot1.png"))
+```
+
+### Regression Results
+
+```{r, echo=FALSE,out.width="85%", out.height="85%",fig.show='hold',fig.align='center', warning=F}
+load("../temp/compare_dem_rep_reg_plots.rdata")
+p <- p +
+  theme(plot.caption = element_text(hjust = 0),
+        text = element_text(size = 25),
+        axis.text.y = element_text(size = 25)) +
+  ggstance::geom_pointrangeh(aes(y = term, x = estimate, 
+                                          xmin = conf.low, xmax = conf.high, colour = model, 
+                                          shape = model), position = ggstance::position_dodgev(height = -.5), 
+                                      fill = "white", fatten = 5, size = 1.5, show.legend = T)
+ggsave("../output/plot2.png", width = 11, height = 7.25, units = "in")
+knitr::include_graphics(c("../output/plot2.png"))
+```
+
+### Regression Results
+
+```{r, echo=FALSE,out.width="85%", out.height="85%",fig.show='hold',fig.align='center', warning=F}
+load("../temp/compare_men_women_reg_plots.rdata")
+p <- p +
+  theme(plot.caption = element_text(hjust = 0),
+        text = element_text(size = 25),
+        axis.text.y = element_text(size = 25)) +
+  ggstance::geom_pointrangeh(aes(y = term, x = estimate, 
+                                          xmin = conf.low, xmax = conf.high, colour = model, 
+                                          shape = model), position = ggstance::position_dodgev(height = -.5), 
+                                      fill = "white", fatten = 5, size = 1.5, show.legend = T)
+ggsave("../output/plot3.png", width = 11, height = 7.25, units = "in")
+knitr::include_graphics(c("../output/plot3.png"))
+```
+
+### Regression Results
+
+```{r, echo=FALSE,out.width="85%", out.height="85%",fig.show='hold',fig.align='center', warning=F}
+load("../temp/compare_ages_reg_plots.rdata")
+p <- p +
+  theme(plot.caption = element_text(hjust = 0),
+        text = element_text(size = 25),
+        axis.text.y = element_text(size = 25)) +
+  ggstance::geom_pointrangeh(aes(y = term, x = estimate, 
+                                          xmin = conf.low, xmax = conf.high, colour = model, 
+                                          shape = model), position = ggstance::position_dodgev(height = -.5), 
+                                      fill = "white", fatten = 5, size = 1.5, show.legend = T)
+ggsave("../output/plot4.png", width = 11, height = 7.25, units = "in")
+knitr::include_graphics(c("../output/plot4.png"))
+```
+
+### Conclusions and Next Steps
+
+>* Explore what might be at play in California and Georgia
+>    * The CCES 2018 data might be able to show what is going on if incumbent recall is the mechanism (but not efficacy)
+>    * Or maybe the top-two primary in California might explain some of the difference
+
+>* The represented party tends to be more likely to vote than the unrepresented party
+>    * Except in Texas and Wisconsin, which both had competitive statewide races
+
+>* What are the overtime effects?
+>    * Replicate the same methods in 2020 and 2022
+
+### References {.allowframebreaks}

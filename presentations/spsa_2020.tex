@@ -1,0 +1,425 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  ignorenonframetext,
+]{beamer}
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{part title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{part title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usetheme[]{Berlin}
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={The Up-Ballot Implications of Uncontested US House Races},
+  pdfauthor={Kevin Morris; Peter Miller},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\newif\ifbibliography
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newenvironment{cslreferences}%
+  {\setlength{\parindent}{0pt}%
+  \everypar{\setlength{\hangindent}{\cslhangindent}}\ignorespaces}%
+  {\par}
+
+\title{The Up-Ballot Implications of Uncontested US House Races}
+\subtitle{The Case of 2018}
+\author{Kevin Morris \and Peter Miller}
+\date{Southern Political Science Association, 2020}
+\institute{Brennan Center for Justice}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{Overview}
+\protect\hypertarget{overview}{}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Question: Does residing in an uncontested U.S. House district have an
+  effect on casting a ballot at all? What are the ``upward" turnout
+  effects of an absent down-ballot race?
+\end{itemize}
+
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Data: Voter registration data from the six states with multiple
+  uncontested House races in the 2018 election
+
+  \begin{itemize}[<+->]
+  \tightlist
+  \item
+    and Wisconsin (for the legislative election)
+  \end{itemize}
+\end{itemize}
+
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Method: A genetic matching model comparing registrants in contested
+  and uncontested districts
+\end{itemize}
+
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Findings: The turnout effect is negative in five of the seven states
+  (not CA and GA)
+
+  \begin{itemize}[<+->]
+  \tightlist
+  \item
+    and larger for the ``represented party" in five of the seven (not
+    Texas and Wisconsin)
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Prior Literature I}
+\protect\hypertarget{prior-literature-i}{}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Studies of uncontested House races
+
+  \begin{itemize}[<+->]
+  \tightlist
+  \item
+    More common in the South and predicted by incumbent's vote share in
+    prior elections (Squire \protect\hyperlink{ref-Squire1989}{1989};
+    Wrighton and Squire \protect\hyperlink{ref-Wrighton1997}{1997})
+  \end{itemize}
+\end{itemize}
+
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Patterns in American voting behavior
+
+  \begin{itemize}[<+->]
+  \tightlist
+  \item
+    Surge and decline in presidential and midterm election years
+    (A. Campbell \protect\hyperlink{ref-Campbell1960}{1960}; J. Campbell
+    \protect\hyperlink{ref-Campbell1991}{1991})
+  \item
+    Roll-off in congressional and ballot measure contests (Wattenberg,
+    McAllister, and Salvanto
+    \protect\hyperlink{ref-Wattenberg2000}{2000}; Bullock and Dunn
+    \protect\hyperlink{ref-Bullock1996}{1996}; Hall and Aspin
+    \protect\hyperlink{ref-Hall1987}{1987})
+  \item
+    Party-based mobilization (Wielhouwer and Lockerbie
+    \protect\hyperlink{ref-Wielhouwer1994}{1994})
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Prior Literature II}
+\protect\hypertarget{prior-literature-ii}{}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Redistricting and representation
+
+  \begin{itemize}[<+->]
+  \tightlist
+  \item
+    Sorting (Bishop \protect\hyperlink{ref-Bishop2009}{2009}) and ethnic
+    turnout in majority-minority districts (Griffin and Keane
+    \protect\hyperlink{ref-Griffin2006}{2006}; Fairdosi and Rogowski
+    \protect\hyperlink{ref-Fairdosi2015}{2015})
+  \item
+    ``packing'' and ``cracking'' for advantage
+  \item
+    Redistricting reduces turnout by disrupting incumbent recall
+    (Winburn and Wagner \protect\hyperlink{ref-Winburn2009}{2009}; Hayes
+    and McKee \protect\hyperlink{ref-Hayes2009}{2009})
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Data}
+\protect\hypertarget{data}{}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Registered Voter Files
+
+  \begin{itemize}[<+->]
+  \tightlist
+  \item
+    Some directly from the state, some from Aristotle and L2
+  \item
+    These include a host of information about voters' age, sex, address,
+    (sometimes) race, and others
+  \end{itemize}
+\end{itemize}
+
+\begin{itemize}[<+->]
+\tightlist
+\item
+  SmartyStreets Geocoder + Census Data
+\end{itemize}
+
+\begin{itemize}[<+->]
+\tightlist
+\item
+  We leverage the Bayesian racial probability estimate methodology
+  developed by Imai and Khanna (\protect\hyperlink{ref-Imai2016}{2016})
+  for states without self-reported race data.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Methodology}
+\protect\hypertarget{methodology}{}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Genetic matching developed by Sekhon
+  (\protect\hyperlink{ref-Sekhon2011}{2011}). The weights are estimated
+  using a random 1 percent sample of treated and untreated observations.
+\end{itemize}
+
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Each treated voter is matched to 25 untreated voter, and matching is
+  done with replacement.
+\end{itemize}
+
+\begin{itemize}[<+->]
+\tightlist
+\item
+  The matching procedure resulted in strong improvements across all the
+  factors on which we match.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Match Output}
+\protect\hypertarget{match-output}{}
+\begin{center}\includegraphics[width=0.49\linewidth,height=0.49\textheight]{../temp/perc_white_spsa} \includegraphics[width=0.49\linewidth,height=0.49\textheight]{../temp/perc_black_spsa} \end{center}
+\end{frame}
+
+\begin{frame}{Match Output}
+\protect\hypertarget{match-output-1}{}
+\begin{center}\includegraphics[width=0.49\linewidth,height=0.49\textheight]{../temp/income_spsa} \includegraphics[width=0.49\linewidth,height=0.49\textheight]{../temp/perc_dems_spsa} \end{center}
+\end{frame}
+
+\begin{frame}{Regression Results}
+\protect\hypertarget{regression-results}{}
+\begin{center}\includegraphics[width=0.85\linewidth,height=0.85\textheight]{../output/plot1} \end{center}
+\end{frame}
+
+\begin{frame}{Regression Results}
+\protect\hypertarget{regression-results-1}{}
+\begin{center}\includegraphics[width=0.85\linewidth,height=0.85\textheight]{../output/plot2} \end{center}
+\end{frame}
+
+\begin{frame}{Regression Results}
+\protect\hypertarget{regression-results-2}{}
+\begin{center}\includegraphics[width=0.85\linewidth,height=0.85\textheight]{../output/plot3} \end{center}
+\end{frame}
+
+\begin{frame}{Regression Results}
+\protect\hypertarget{regression-results-3}{}
+\begin{center}\includegraphics[width=0.85\linewidth,height=0.85\textheight]{../output/plot4} \end{center}
+\end{frame}
+
+\begin{frame}{Conclusions and Next Steps}
+\protect\hypertarget{conclusions-and-next-steps}{}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Explore what might be at play in California and Georgia
+
+  \begin{itemize}[<+->]
+  \tightlist
+  \item
+    The CCES 2018 data might be able to show what is going on if
+    incumbent recall is the mechanism (but not efficacy)
+  \item
+    Or maybe the top-two primary in California might explain some of the
+    difference
+  \end{itemize}
+\end{itemize}
+
+\begin{itemize}[<+->]
+\tightlist
+\item
+  The represented party tends to be more likely to vote than the
+  unrepresented party
+
+  \begin{itemize}[<+->]
+  \tightlist
+  \item
+    Except in Texas and Wisconsin, which both had competitive statewide
+    races
+  \end{itemize}
+\end{itemize}
+
+\begin{itemize}[<+->]
+\tightlist
+\item
+  What are the overtime effects?
+
+  \begin{itemize}[<+->]
+  \tightlist
+  \item
+    Replicate the same methods in 2020 and 2022
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[allowframebreaks,allowframebreaks]{References}
+\protect\hypertarget{references}{}
+\hypertarget{refs}{}
+\begin{cslreferences}
+\leavevmode\hypertarget{ref-Bishop2009}{}%
+Bishop, Bill. 2009. \emph{The Big Sort: Why the Clustering of
+Like-Minded America Is Tearing Us Apart}. Mariner Books.
+
+\leavevmode\hypertarget{ref-Bullock1996}{}%
+Bullock, Charles, and Richard Dunn. 1996. ``Election Roll-Off: A Test of
+Three Explanations.'' \emph{Urban Affairs Review} 32: 71--86.
+
+\leavevmode\hypertarget{ref-Campbell1960}{}%
+Campbell, Angus. 1960. ``Surge and Decline: A Study of Electoral
+Change.'' \emph{Public Opinion Quarterly} 24: 397--418.
+
+\leavevmode\hypertarget{ref-Campbell1991}{}%
+Campbell, James. 1991. ``The Presidential Surge and Its Midterm Decline
+in Congressional Elections, 1868-1988.'' \emph{Journal of Politics} 53:
+477--87.
+
+\leavevmode\hypertarget{ref-Fairdosi2015}{}%
+Fairdosi, Amir Shawn, and Jon Rogowski. 2015. ``Candidate Race,
+Partisanship, and Political Participation: When Do Black Candidates
+Increase Black Turnout?'' \emph{Political Research Quarterly} 68:
+337--49.
+
+\leavevmode\hypertarget{ref-Griffin2006}{}%
+Griffin, John, and Michael Keane. 2006. ``Descriptive Representation and
+the Composition of African American Turnout.'' \emph{American Journal of
+Political Science} 50: 998--1012.
+
+\leavevmode\hypertarget{ref-Hall1987}{}%
+Hall, William, and Larry Aspin. 1987. ``The Roll-Off Effect in Judicial
+Retention Elections.'' \emph{Social Science Journal} 24: 415--27.
+
+\leavevmode\hypertarget{ref-Hayes2009}{}%
+Hayes, Danny, and Seth McKee. 2009. ``The Participatory Effects of
+Redistricting.'' \emph{American Journal of Political Science} 53:
+1006--23.
+
+\leavevmode\hypertarget{ref-Imai2016}{}%
+Imai, Kosuke, and Kabir Khanna. 2016. ``Improving Ecological Inference
+by Predicting Individual Ethnicity from Voter Registration Records.''
+\emph{Political Analysis} 24 (2): 263--72.
+\url{https://doi.org/10.1093/pan/mpw001}.
+
+\leavevmode\hypertarget{ref-Sekhon2011}{}%
+Sekhon, Jasjeet S. 2011. ``Multivariate and Propensity Score Matching
+Software with Automated Balance Optimization: TheMatchingPackage forR.''
+\emph{Journal of Statistical Software} 42 (7).
+\url{https://doi.org/10.18637/jss.v042.i07}.
+
+\leavevmode\hypertarget{ref-Squire1989}{}%
+Squire, Peverill. 1989. ``Competition and Uncontested Seats in U.s.
+House Elections.'' \emph{Legislative Studies Quarterly} 14: 281--95.
+
+\leavevmode\hypertarget{ref-Wattenberg2000}{}%
+Wattenberg, Martin, Ian McAllister, and Anthony Salvanto. 2000. ``How
+Voting Is Like Taking an Sat Test: An Analysis of American Voter
+Rolloff.'' \emph{American Politics Research} 28: 234--50.
+
+\leavevmode\hypertarget{ref-Wielhouwer1994}{}%
+Wielhouwer, Peter, and Brad Lockerbie. 1994. ``Party Contacting and
+Political Participation, 1952-90.'' \emph{American Journal of Political
+Science} 38: 211--29.
+
+\leavevmode\hypertarget{ref-Winburn2009}{}%
+Winburn, Jonathan, and Michael Wagner. 2009. ``Carving Voters Out:
+Redistricting's Influence on Political Information, Turnout, and Voting
+Behavior.'' \emph{Political Research Quarterly} 63: 373--86.
+
+\leavevmode\hypertarget{ref-Wrighton1997}{}%
+Wrighton, Mark, J, and Peverill Squire. 1997. ``Uncontested Seats and
+Electoral Competition for the U.s. House of Representatives over Time.''
+\emph{Journal of Politics} 59: 452--68.
+\end{cslreferences}
+\end{frame}
+
+\end{document}
